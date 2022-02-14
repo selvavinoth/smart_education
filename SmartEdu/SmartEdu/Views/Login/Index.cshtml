@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+@model SmartEdu.ViewModel.LoginViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @Html.Partial("_Scripts")
+</head>
+<body>
+    <div id="masterDiv" style="width:100%;height:100%;padding-top:0px;">
+    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+        <tr>
+        <td align="center" valign="middle">
+            <div>
+                <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+                    <tr>
+                    <td>
+                    @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+                {
+                    @Html.ValidationSummary(true)
+                   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                     <tr>
+                        <td class="td_label">
+                            @Html.Label("User Name")
+                        </td>
+                        <td class="td_text">
+                            @Html.TextBoxFor(exp => exp.UserName)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label("password")
+                        </td>
+                        <td class="td_text">
+                            @Html.PasswordFor(model=> model.Password)
+                        </td>
+                    </tr>
+                   </table>
+                }
+                    </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+        </tr>
+    </table>
+    </div>
+</body>
+</html>

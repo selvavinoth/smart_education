@@ -1,0 +1,164 @@
+﻿@model SmartEdu.ViewModel.OrganizationViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@using SmartEdu.Helper
+@Html.Partial("_Scripts")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 800px;">
+        <tr>
+            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                @*@using (Html.BeginForm("OrganizationIUAction", "Organization", FormMethod.Post, new { id="orgForm"}))*@
+                
+                @using (Html.BeginForm("UploadImage", "Shared", FormMethod.Post, 
+	new { enctype = "multipart/form-data", id="orgForm", 
+		name="orgForm", target="UploadCollegeLogo" }))
+        {
+                    @Html.ValidationSummary(true)
+                    <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_Code"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORG_Code)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_ShortDescription"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_ShortDescription)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_Code)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_ShortDescription)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_Description"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_Description)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_History"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_History)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_Description)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_History)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_Logo"))
+                            </td>
+                            <td class="td_text">
+                                   @* @Html.TextBoxFor(model => model.ORG_DepartmentLogo, new { type = "file" })*@
+                                  <div> @Html.Partial("_ImageUploder", Model.IUVModel)</div>
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_PhoneNo"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_PhoneNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_DepartmentLogo)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_PhoneNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_MobileNo"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORG_MobileNo)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_EmailID"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORG_EmailId)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_MobileNo)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_EmailId)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_Website"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_Website)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_FaxNo"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORG_FaxNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_Website)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORG_FaxNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.HiddenFor(model => model.ORG_Id)
+                            </td>
+                        </tr>
+                    </table>
+        }
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function fnValidateOrg() { return $("#orgForm").valid(); }
+    function fnGetOrgViewModel() {
+        var OrganizationViewModel = {};
+        OrganizationViewModel.ORG_Code = $("#ORG_Code").val();
+        OrganizationViewModel.ORG_ShortDescription = $("#ORG_ShortDescription").val();
+        OrganizationViewModel.ORG_Description = $("#ORG_Description").val();
+        OrganizationViewModel.ORG_History = $("#ORG_History").val();
+        OrganizationViewModel.ORG_DepartmentLogo = $("#ORG_DepartmentLogo").val();
+        OrganizationViewModel.ORG_PhoneNo = $("#ORG_PhoneNo").val();
+        OrganizationViewModel.ORG_MobileNo = $("#ORG_MobileNo").val();
+        OrganizationViewModel.ORG_EmailId = $("#ORG_EmailId").val();
+        OrganizationViewModel.ORG_Website = $("#ORG_Website").val();
+        OrganizationViewModel.ORG_FaxNo = $("#ORG_FaxNo").val();
+        OrganizationViewModel.ORG_StartDate = $("#ORG_StartDate").val();
+        OrganizationViewModel.ORG_EndDate = $("#ORG_EndDate").val();
+        OrganizationViewModel.LogoBinaryCode = $("#LogoBinaryCode").val();
+        OrganizationViewModel.OCPViewModelList = _fnGetCPViewModel();
+        return OrganizationViewModel;
+    }
+</script>

@@ -1,0 +1,453 @@
+﻿@model SmartEdu.ViewModel.ConfigFieldLevelValidation
+@using SmartEdu.Helper
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 1000px;">
+        <tr style="background-color:Gray;">
+            <td colspan="2" valign="middle" align="center">
+                <div>
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td class="td_label" style="width: 200px;">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ViewModelName"))
+                            </td>
+                            <td class="td_text" style="width: 200px;">
+                                @Html.DropDownListFor(model => model.CFV_ViewModelName, Model.ViewModelNameList)
+                            </td>
+                            </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0" style="width:200px;">
+                    <tr style="background-color:Gray;">
+                        <td class="td_label" style="width: 70px;">
+                            @Html.Label(ResourceKeeper.GetResource("APP_DataType"))
+                        </td>
+                        <td class="td_text" style="width: 130px;">
+                            @Html.DropDownListFor(model => model.DataType, Model.DataTypeList)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="gridAction" colspan="2">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td class="AddIcon">
+                                        <label onclick="fnSetConfig();">
+                                            @ResourceKeeper.GetResource("APP_Set")
+                                        </label>
+                                    </td>
+                                    <td class="DeleteIcon">
+                                        <label onclick="fnResetConfig();">
+                                            @ResourceKeeper.GetResource("APP_Reset")
+                                        </label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr id="FieldHolder">
+                        <td class="td_text" colspan="2">
+                        @if(Model.FilteredFieldList != null) { 
+                            <select multiple id="SelectedFieldName" style="width:200px;">
+                                @foreach (var m in Model.FilteredFieldList) { 
+                                    <option value="@m.Value">@m.Text</option>
+                                }
+                            </select>
+                        }
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width:800px;">
+                  <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                    <tr>
+                        <td>
+                            <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                            </div>
+                        </td>
+                    </tr>
+                  </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 600px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    @ResourceKeeper.GetResource("APP_FieldLevelConfig")</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 200px;" valign="middle" align="center">
+                                @using (Html.BeginForm("FieldLevelValidationIUAction", "FieldLevelValidationConfig", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                                         <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_IsMandatory"))
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.CheckBoxFor(model => model.IsMandatory)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_DisplayName"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.TextBoxFor(model => model.DisplayName)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_IsInteger"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.CheckBoxFor(model => model.IsInteger)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_IsAmount"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.CheckBoxFor(model => model.IsAmount)
+                                            </td>
+                                            
+                                            </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                    @Html.Label(ResourceKeeper.GetResource("APP_ValidateEmail"))
+                                            </td>
+                                            <td class="td_text">
+                                                    @Html.CheckBoxFor(model => model.Need_EmailValidation)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_BlockWhitespace"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.CheckBoxFor(model => model.Allow_WhiteSpace)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_BlockSpecialCharacter"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.CheckBoxFor(model => model.Allow_SpecialCharacter)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_ISAlphanumeric"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.CheckBoxFor(model => model.IsAlphaNumeric)
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_MinLength"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.TextBoxFor(model => model.MinimumLength)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_MaxLength"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.TextBoxFor(model => model.MaximumLength)
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_Range"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.TextBoxFor(model => model.Range)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_DateFormat"))
+                                            </td>
+                                            <td class="td_text">
+                                                   @Html.TextBoxFor(model => model.DateFormat)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.HiddenFor(model => model.CFV_ID)
+                                                @Html.HiddenFor(model=> model.ReleaseMemory)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript">
+    /* Initialization */
+    $(function () {
+        fnSetPageSize();
+        init();
+        $("#DataType").change(function () {
+            $("#SelectedFieldName option").remove();
+            if ($("#DataType").val() == "0") { $("#SelectedFieldName").append($('<option>', { value: "0" }).text("- Select -")); return false; }
+            else { fnFilteredFieldList(); }
+        });
+        $("#CFV_ViewModelName").change(function () { $("#DataType").val("0"); $("#SelectedFieldName option").remove(); mygrid.clearAll();fnLoadGrid();} );
+        $("#SelectedFieldName").onDblClick(function (){fnSetConfig();});
+    });
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader('@ResourceKeeper.GetResource("APP_FieldName"),@ResourceKeeper.GetResource("APP_IsMandatory"),@ResourceKeeper.GetResource("APP_MinLength"),@ResourceKeeper.GetResource("APP_MaxLength"),@ResourceKeeper.GetResource("APP_ValidateEmail"),@ResourceKeeper.GetResource("APP_BlockSpecialCharacter"),@ResourceKeeper.GetResource("APP_Range"),@ResourceKeeper.GetResource("APP_DateFormat"),@ResourceKeeper.GetResource("APP_BlockWhitespace"),@ResourceKeeper.GetResource("APP_IsInteger"),@ResourceKeeper.GetResource("APP_IsAmount"),@ResourceKeeper.GetResource("APP_ISAlphanumeric")'); //set column names
+        mygrid.setInitWidths("150,*,*,*,*,*,*,*,*,*,*,*"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){});
+    }
+    function fnSetPageSize(){
+        var bH=parent.ContentHeight();
+        $("#gridbox").height(String(bH-150)+"px");
+        $("#FieldHolder").height(String(bH-210)+"px");
+        $("#SelectedFieldName").height(String(bH-210)+"px");
+        $("#pageMainDiv").height(String(bH-50)+"px");
+    }
+</script>
+
+<script type="text/javascript">
+    var mygrid;
+    function fnFilteredFieldList(){
+        $.ajax({
+            url:'@Url.Content("~/FieldLevelValidationConfig/GetFieldsByType")',
+            type:"POST",
+            dataType:"Json",
+            data:{"ViewModelName":$("#CFV_ViewModelName").val(),"DataType":$("#DataType").val()},
+            success:function(obj){
+                if(obj && obj!=null && obj.FilteredFieldList && obj.FilteredFieldList!=null){
+                    $(obj.FilteredFieldList).each(function(){ $("#SelectedFieldName").append($('<option>',{ value : this.Value , selected : this.Selected}).text(this.Text));});
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+   
+    function fnShowhidePopUp(val){ $("#contentWrapper").css("display", val); $("#popupBox").css("display",val); }
+    function fnLoadGrid() {
+        if ($("#CFV_ViewModelName").val() == "0") {return false;}
+        $.ajax({
+            url: '@Url.Content("~/FieldLevelValidationConfig/LoadGrid")',
+            type:"POST",
+            dataType:"Json",
+            data: { "viewModelName": $("#CFV_ViewModelName").val() },
+            success:function(obj){ if(obj && obj!=null){ fnParseGrid(obj.GridData); } },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){ if(obj && obj!=null){ mygrid.clearAll(); mygrid.parse(obj,"json"); } }
+    function fnResetConfig(){
+        if ($("#SelectedFieldName option:selected").val() == null || $("#SelectedFieldName option:selected").val() == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        $.ajax({
+            url: '@Url.Content("~/FieldLevelValidationConfig/ResetConfig")',
+            type: "POST",
+            dataType: "JSON",
+            data: { "ViewModelName": $("#CFV_ViewModelName").val(), "SelectedField": $("#SelectedFieldName option:selected").val() },
+            success: function (obj) {
+                if (obj && obj != null) {
+                    fnParseGrid(obj.GridData);
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    
+</script>
+
+
+<script type="text/javascript">
+    /* Set Configuration*/
+    function fnSetConfig() {
+        if ($("#SelectedFieldName option:selected").val() == null || $("#SelectedFieldName option:selected").val() == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("APP_Set")');
+        fnClearContent();
+        fnShowFieldsAsPerType();
+        $.ajax({
+            url: '@Url.Content("~/FieldLevelValidationConfig/GetConfigModel")',
+            type: "POST",
+            dataType: "JSON",
+            data: { "ViewModelName": $("#CFV_ViewModelName").val(), "SelectedField": $("#SelectedFieldName option:selected").val() },
+            success: function (obj) {
+                if (obj && obj != null) { fnShowhidePopUp(""); fnFillConfigView(obj.ConfigViewModel); }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnEdit() {
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("APP_Set")');
+        fnClearContent();
+        fnShowFieldsAsPerType();
+        $.ajax({
+            url: '@Url.Content("~/FieldLevelValidationConfig/GetConfigModel")',
+            type: "POST",
+            dataType: "JSON",
+            data: { "ViewModelName": $("#CFV_ViewModelName").val(), "SelectedField": mygrid.getSelectedId() },
+            success: function (obj) {
+                if (obj && obj != null) { fnShowhidePopUp(""); fnFillConfigView(obj.ConfigViewModel); }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnSave() {
+        $.ajax({
+            url: '@Url.Content("~/FieldLevelValidationConfig/FieldLevelValidationIUAction")',
+            type: "POST",
+            contentType: "application/Json",
+            dataType: "JSON",
+            data: JSON.stringify(fnGetViewModel()),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Status) {
+                        if (obj.GridData && obj.GridData != null) { mygrid.clearAll(); mygrid.parse(obj.GridData, "json"); }
+                        fnClearContent(); fnShowhidePopUp("none"); 
+                    }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnGetViewModel() {
+        var ConfigFieldLevelValidation = {};
+        ConfigFieldLevelValidation.CFV_ViewModelName = $("#CFV_ViewModelName").val();
+        ConfigFieldLevelValidation.SelectedFieldName = $("#SelectedFieldName option:selected").val();
+        ConfigFieldLevelValidation.IsMandatory = $("#IsMandatory").attr("checked");
+        ConfigFieldLevelValidation.Allow_WhiteSpace = $("#Allow_WhiteSpace").attr("checked");
+        ConfigFieldLevelValidation.Need_EmailValidation = $("#Need_EmailValidation").attr("checked");
+        ConfigFieldLevelValidation.Allow_SpecialCharacter = $("#Allow_SpecialCharacter").attr("checked");
+        ConfigFieldLevelValidation.IsInteger = $("#IsInteger").attr("checked");
+        ConfigFieldLevelValidation.IsAmount = $("#IsAmount").attr("checked");
+        ConfigFieldLevelValidation.IsAlphaNumeric = $("#IsAlphaNumeric").attr("checked");
+        ConfigFieldLevelValidation.DateFormat = $("#DateFormat").val();
+        ConfigFieldLevelValidation.MinimumLength = $("#MinimumLength").val();
+        ConfigFieldLevelValidation.MaximumLength = $("#MaximumLength").val();
+        ConfigFieldLevelValidation.Range = $("#Range").val();
+        ConfigFieldLevelValidation.DisplayName = $("#DisplayName").val();
+        return ConfigFieldLevelValidation;
+    }
+    function fnClearContent() {
+        $("#IsMandatory").removeAttr("checked");
+        $("#Allow_WhiteSpace").removeAttr("checked");
+        $("#Need_EmailValidation").removeAttr("checked");
+        $("#Allow_SpecialCharacter").removeAttr("checked");
+        $("#IsInteger").removeAttr("checked");
+        $("#IsAmount").removeAttr("checked");
+        $("#IsAlphaNumeric").removeAttr("checked");
+        $("#Range").val("");
+        $("#DateFormat").val("");
+        $("#MinimumLength").val("");
+        $("#MaximumLength").val("");
+        $("#DisplayName").val("");
+    }
+    function fnFillConfigView(obj) {
+        if (obj) {
+            if (obj.IsMandatory) { $("#IsMandatory").attr("checked", "checked"); }
+            if (obj.Allow_WhiteSpace) { $("#Allow_WhiteSpace").attr("checked", "checked"); }
+            if (obj.Need_EmailValidation) { $("#Need_EmailValidation").attr("checked", "checked"); }
+            if (obj.Allow_SpecialCharacter) { $("#Allow_SpecialCharacter").attr("checked", "checked"); }
+            if (obj.IsInteger) { $("#IsInteger").attr("checked", "checked"); }
+            if (obj.IsAmount) { $("#IsAmount").attr("checked", "checked"); }
+            if (obj.IsAlphaNumeric) { $("#IsAlphaNumeric").attr("checked", "checked"); }
+            $("#Range").val(obj.Range);
+            $("#DateFormat").val(obj.DateFormat);
+            $("#MinimumLength").val(obj.MinimumLength);
+            $("#MaximumLength").val(obj.MaximumLength);
+            $("#DisplayName").val(obj.DisplayName);
+        }
+    }
+</script>
+<script type="text/javascript">
+    function fnHideAllFields() {
+        $("#Allow_WhiteSpace").attr("disabled", "disabled");
+        $("#Need_EmailValidation").attr("disabled", "disabled");
+        $("#Allow_SpecialCharacter").attr("disabled", "disabled");
+        $("#IsInteger").attr("disabled", "disabled");
+        $("#IsAmount").attr("disabled", "disabled");
+        $("#IsAlphaNumeric").attr("disabled", "disabled");
+        $("#Range").attr("disabled", "disabled");
+        $("#DateFormat").attr("disabled", "disabled");
+        $("#MinimumLength").attr("disabled", "disabled");
+        $("#MaximumLength").attr("disabled", "disabled");
+    }
+    function fnShowFieldsAsPerType() {
+        fnHideAllFields();
+        if ($("#DataType").val() == "0" || $("#DataType").val() == "") {
+            return false;
+         }
+        else {
+            switch ($("#DataType").val()) {
+                case "Binary":
+                    $("#Allow_WhiteSpace").removeAttr("disabled");
+                    $("#Allow_SpecialCharacter").removeAttr("disabled");
+                    break;
+                case "Boolean":
+                    break;
+                case "Byte":
+                    break;
+                case "DateTime":
+                    $("#DateFormat").removeAttr("disabled");
+                    break;
+                case "Byte":
+                    break;
+                case "Int16":
+                case "Int32":
+                case "Int64":
+                    $("#IsInteger").removeAttr("disabled");
+                    $("#Range").removeAttr("disabled");
+                    break;
+                case "Decimal":
+                    $("#Range").removeAttr("disabled");
+                    $("#IsAmount").removeAttr("disabled");
+                    break;
+                case "String":
+                    $("#MinimumLength").removeAttr("disabled");
+                    $("#MaximumLength").removeAttr("disabled");
+                    $("#Allow_WhiteSpace").removeAttr("disabled");
+                    $("#Allow_SpecialCharacter").removeAttr("disabled");
+                    break;
+                default:
+                    break;
+            }
+        
+        }
+    }
+</script>

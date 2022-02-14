@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@using SmartEdu.Helper
+@using SmartEdu.SessionHolder
+@model SmartEdu.ViewModel.OrganizationViewModel
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 1000px;">
+        <tr>
+             @if (SessionPersistor.CollegeId == 0 || SessionPersistor.DPID == 0) { 
+                <td colspan="2" align="center" valign="middle">
+                    @Html.Partial("_OrgSelection")
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                @ResourceKeeper.GetResource("CMN_Add")
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit();">
+                                @ResourceKeeper.GetResource("CMN_Edit")
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                @ResourceKeeper.GetResource("CMN_Delete")
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 1000px; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){ fnSetPageSize(); init(); });
+    var mygrid;
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader('@ResourceKeeper.GetResource("APP_Code"),@ResourceKeeper.GetResource("APP_ORG_ShortDescription"),@ResourceKeeper.GetResource("APP_Description"),@ResourceKeeper.GetResource("APP_ORG_ContactPerson"),@ResourceKeeper.GetResource("APP_ORG_Website"),@ResourceKeeper.GetResource("APP_ORG_MobileNo"),Effective From,Effective To'); //set column names
+        mygrid.setInitWidths("100,100,100,100,*,100,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit();});
+       
+    }
+    function fnSetPageSize(){
+        var orgHeight=0;
+        if(typeof _fnOrgSelectionHeight=='function'){orgHeight=_fnOrgSelectionHeight();}
+        $("#gridbox").height(String(parent.ContentHeight()-(orgHeight+150))+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-(orgHeight+50))+"px");
+    }
+    function fnShowhidePopUp(val){ $("#contentWrapper").css("display", val); $("#popupBox").css("display",val); }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content(Model.GridLoadUrl)',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){ if(obj && obj!=null){fnParseGrid(obj.GridData);} },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){ if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");} }
+    function fnAdd(){var redirectUrl='@Url.Content(Model.RedirectUrl)'+""+0; location.href=redirectUrl;}
+    function fnEdit(){
+        var rowId=mygrid.getSelectedRowId();
+        if(!rowId){alert('@ResourceKeeper.GetResource("CMN_Need_Selection")');return false;}
+        var redirectUrl='@Url.Content(Model.RedirectUrl)'+""+rowId;
+        location.href=redirectUrl;
+    }
+     function fnDelete() {
+        var rowId=mygrid.getSelectedRowId();
+        if(!rowId){alert('@ResourceKeeper.GetResource("CMN_Need_Selection")');return false;}
+        if(!confirm('@ResourceKeeper.GetResource("CMN_Cofirm")')){return false;}
+        $.ajax({
+            url: '@Url.Content(Model.DeleteUrl)',
+            type: "POST",
+            dataType: "Json",
+            data: {"id":rowId},
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Msg && obj.Msg != null) { alert(obj.Msg); }
+                    fnParseGrid(obj.GridData);
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function _fnClearScreen(){
+        if(mygrid && mygrid!=null){mygrid.clearAll();}
+    }
+    </script>
+    @if (SessionPersistor.CollegeId == 0  && ViewBag.NEED_COLLEGE_SELECTION == "TRUE") { 
+            <script type="text/javascript">
+                function _fnLoadOnCollegeChange() { fnLoadGrid(); }
+            </script>
+    }
+    else
+    {
+        <script type="text/javascript">
+            fnLoadGrid();
+        </script>
+    }

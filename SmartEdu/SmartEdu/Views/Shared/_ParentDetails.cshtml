@@ -1,0 +1,220 @@
+﻿@model SmartEdu.ViewModel.ParentViewModel
+@using SmartEdu.Helper
+<div style="width:100%;height:100%;">
+        @using (Html.BeginForm("StudentIUAction", "Student", FormMethod.Post, new { id = "parentForm" }))
+        {
+            @Html.ValidationSummary(true)
+            if (Model.ParentDetailList != null && Model.ParentDetailList.Count() != 0)
+           {
+               var val = "<td>";
+               var count = 0;
+                <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                <tr>
+                @foreach (var field in Model.ParentDetailList)
+                {
+                    switch (field)
+                    {
+                        case DataKeeper.UserDetails.AU_Anniversary_Date:
+                            <td class="td_label">
+                                @Html.Label("Anniversary Date")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_Anniversary_Date)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Anniversary_Date) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_Occupation:
+                             <td class="td_label">
+                                @Html.Label("Occupation")
+                            </td>
+                            <td class="td_text">
+                                @Html.DropDownListFor(model => model.APD_Occupation, (Model.OccupationList != null ? Model.OccupationList : new List<SelectListItem>()))
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Occupation) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_DOB:
+                             <td class="td_label">
+                                @Html.Label("DOB")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_DOB)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_DOB) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_Email_Id:
+                            <td class="td_label">
+                                @Html.Label("Email")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_Email_Id)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Email_Id) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_EndDate:
+                            <td class="td_label">
+                                @Html.Label("End Date")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_EndDate)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_EndDate) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_FaxNo:
+                            <td class="td_label">
+                                @Html.Label("Fax")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_FaxNo)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_FaxNo) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_FirstName:
+                            <td class="td_label">
+                                @Html.Label("First Name")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_FirstName)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_FirstName) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_Gender:
+                            <td class="td_label">
+                                @Html.Label("Gender")
+                            </td>
+                            <td class="td_text">
+                                @Html.DropDownListFor(model => model.APD_Gender, (Model.GenderList != null ? Model.GenderList : new List<SelectListItem>()))
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Gender) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_Id:
+                             <td colspan="2">
+                                @Html.HiddenFor(model => model.APD_Id)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Id) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_LastName:
+                            <td class="td_label">
+                                @Html.Label("Last Name")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_LastName)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_LastName) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_MiddleName:
+                            <td class="td_label">
+                                @Html.Label("Middle Name")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_MiddleName)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_MiddleName) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_MobileNo:
+                            <td class="td_label">
+                                @Html.Label("Mobile No")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_MobileNo)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_MobileNo) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_PhoneNo:
+                             <td class="td_label">
+                                @Html.Label("Phone No")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_PhoneNo)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_PhoneNo) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_StartDate:
+                            <td class="td_label">
+                                @Html.Label("Activated From")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_StartDate)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_StartDate) + "</td>";
+                           count++;
+                           break;
+                        case DataKeeper.UserDetails.AU_Title:
+                            <td class="td_label">
+                                @Html.Label("Title")
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.APD_Title)
+                            </td>
+                           val = val + "<td colspan='2'>" + @Html.ValidationMessageFor(model => model.APD_Title) + "</td>";
+                           count++;
+                           break;
+                        default:
+                           val = val + "<td colspan='2'></td>";
+                           count++;
+                           break;
+                    }
+                    if (count == 2)
+                    {
+                        @Html.Raw("</tr>" + val + "</tr>")
+                   val = "<tr>";
+                   count = 0;
+                    }
+
+                }
+                 @if (count == 1)
+                 {
+                        @Html.Raw("<td colspan='2'></td></tr>" + val + "<td colspan='2'></td></tr>")
+                 }
+                 </table>
+            }
+        }
+    </div>
+<script type="text/javascript">
+    function fnValidateParent() { return $("#parentForm").valid(); }
+    function fnGetParentData() {
+        var ParentViewModel = {};
+        ParentViewModel.APD_Title = $("#APD_Title").val();
+        ParentViewModel.APD_FirstName = $("#APD_FirstName").val();
+        ParentViewModel.APD_MiddleName = $("#APD_MiddleName").val();
+        ParentViewModel.APD_LastName = $("#APD_LastName").val();
+        ParentViewModel.APD_Gender = $("#APD_Gender").val();
+        ParentViewModel.APD_DOB = $("#APD_DOB").val();
+        ParentViewModel.APD_Anniversary_Date = $("#APD_Anniversary_Date").val();
+        ParentViewModel.APD_StartDate = $("#APD_StartDate").val();
+        ParentViewModel.APD_EndDate = $("#APD_EndDate").val();
+        ParentViewModel.APD_Qualification = $("#APD_Qualification").val();
+        ParentViewModel.APD_Email_Id = $("#APD_Email_Id").val();
+        ParentViewModel.APD_PhoneNo = $("#APD_PhoneNo").val();
+        ParentViewModel.APD_MobileNo = $("#APD_MobileNo").val();
+        ParentViewModel.APD_FaxNo = $("#APD_FaxNo").val();
+        return ParentViewModel;
+    }
+    function _fnClearParentDetails() {
+        $("#APD_Title").val("");
+        $("#APD_FirstName").val("");
+        $("#APD_MiddleName").val("");
+        $("#APD_LastName").val("");
+        $("#APD_Gender").val("");
+        $("#APD_DOB").val("");
+        $("#APD_Anniversary_Date").val("");
+        $("#APD_StartDate").val("");
+        $("#APD_EndDate").val("");
+        $("#APD_Email_Id").val("");
+        $("#APD_PhoneNo").val("");
+        $("#APD_MobileNo").val("");
+        $("#APD_FaxNo").val("");
+    }
+</script>

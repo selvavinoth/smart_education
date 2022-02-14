@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="APP_BlockSpecialCharacter" xml:space="preserve">
+    <value>Block Special Character</value>
+  </data>
+  <data name="APP_BlockWhitespace" xml:space="preserve">
+    <value>Block Whitespace</value>
+  </data>
+  <data name="APP_CMN_Authentication_Details" xml:space="preserve">
+    <value>Authentication Details</value>
+  </data>
+  <data name="APP_Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="APP_DataType" xml:space="preserve">
+    <value>Data Type</value>
+  </data>
+  <data name="APP_DateFormat" xml:space="preserve">
+    <value>Date Format</value>
+  </data>
+  <data name="APP_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="APP_DisplayName" xml:space="preserve">
+    <value>DisplayName</value>
+  </data>
+  <data name="APP_FieldLevelConfig" xml:space="preserve">
+    <value>Field Level Configuration</value>
+  </data>
+  <data name="APP_FieldName" xml:space="preserve">
+    <value>Field Name</value>
+  </data>
+  <data name="APP_ISAlphanumeric" xml:space="preserve">
+    <value>IsAlphanumeric</value>
+  </data>
+  <data name="APP_IsAmount" xml:space="preserve">
+    <value>IsAmount</value>
+  </data>
+  <data name="APP_IsComponent" xml:space="preserve">
+    <value>Is Component</value>
+  </data>
+  <data name="APP_IsInteger" xml:space="preserve">
+    <value>IsInteger</value>
+  </data>
+  <data name="APP_IsMandatory" xml:space="preserve">
+    <value>IsMandatory</value>
+  </data>
+  <data name="APP_LOV" xml:space="preserve">
+    <value>List Of Values</value>
+  </data>
+  <data name="APP_MaxLength" xml:space="preserve">
+    <value>Maximum Length</value>
+  </data>
+  <data name="APP_Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="APP_MenuName" xml:space="preserve">
+    <value>Menu Name</value>
+  </data>
+  <data name="APP_MinLength" xml:space="preserve">
+    <value>Minimum Length</value>
+  </data>
+  <data name="APP_ORG_City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="APP_ORG_College_Details" xml:space="preserve">
+    <value>College Details</value>
+  </data>
+  <data name="APP_ORG_ContactPerson" xml:space="preserve">
+    <value>Contact Person</value>
+  </data>
+  <data name="APP_ORG_ContactPerson_Details" xml:space="preserve">
+    <value>Contact Person Details</value>
+  </data>
+  <data name="APP_ORG_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="APP_ORG_Department_Details" xml:space="preserve">
+    <value>Department Details</value>
+  </data>
+  <data name="APP_ORG_EmailID" xml:space="preserve">
+    <value>Email Id</value>
+  </data>
+  <data name="APP_ORG_FaxNo" xml:space="preserve">
+    <value>FaxNo</value>
+  </data>
+  <data name="APP_ORG_History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="APP_ORG_Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="APP_ORG_MobileNo" xml:space="preserve">
+    <value>Mobile No</value>
+  </data>
+  <data name="APP_ORG_PhoneNo" xml:space="preserve">
+    <value>Phone No</value>
+  </data>
+  <data name="APP_ORG_PinCode" xml:space="preserve">
+    <value>Pincode</value>
+  </data>
+  <data name="APP_ORG_ProfileImage" xml:space="preserve">
+    <value>Profile Image</value>
+  </data>
+  <data name="APP_ORG_Qualification" xml:space="preserve">
+    <value>Qualification</value>
+  </data>
+  <data name="APP_ORG_ShortDescription" xml:space="preserve">
+    <value>Short Description</value>
+  </data>
+  <data name="APP_ORG_State" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="APP_ORG_Website" xml:space="preserve">
+    <value>WebSite</value>
+  </data>
+  <data name="APP_Parent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
+  <data name="APP_Range" xml:space="preserve">
+    <value>Range</value>
+  </data>
+  <data name="APP_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="APP_Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="APP_Role_Task_Mapping" xml:space="preserve">
+    <value>Role Task Mapping</value>
+  </data>
+  <data name="APP_Set" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="APP_Task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="APP_TaskName" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="APP_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="APP_Url" xml:space="preserve">
+    <value>Url</value>
+  </data>
+  <data name="APP_ValidateEmail" xml:space="preserve">
+    <value>Validate Email</value>
+  </data>
+  <data name="APP_ViewModelName" xml:space="preserve">
+    <value>ViewModel Name</value>
+  </data>
+  <data name="CMN_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="CMN_Added_Successfully" xml:space="preserve">
+    <value>Added successfully.</value>
+  </data>
+  <data name="CMN_AlphaNumeric" xml:space="preserve">
+    <value>Alphanumeric</value>
+  </data>
+  <data name="CMN_Already_Exist" xml:space="preserve">
+    <value>already exist.</value>
+  </data>
+  <data name="CMN_Amout" xml:space="preserve">
+    <value>Amount.</value>
+  </data>
+  <data name="CMN_Cofirm" xml:space="preserve">
+    <value>Are you sure? Do you want to continue?</value>
+  </data>
+  <data name="CMN_College" xml:space="preserve">
+    <value>College</value>
+  </data>
+  <data name="CMN_Combination_Of" xml:space="preserve">
+    <value>Combination of </value>
+  </data>
+  <data name="CMN_Date" xml:space="preserve">
+    <value>Date.</value>
+  </data>
+  <data name="CMN_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CMN_Deleted_Successfully" xml:space="preserve">
+    <value>Deleted successfully.</value>
+  </data>
+  <data name="CMN_Department" xml:space="preserve">
+    <value>Department </value>
+  </data>
+  <data name="CMN_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CMN_Email" xml:space="preserve">
+    <value>Email.</value>
+  </data>
+  <data name="CMN_Fill_Form" xml:space="preserve">
+    <value>Please fill the form first.</value>
+  </data>
+  <data name="CMN_Integer" xml:space="preserve">
+    <value>Integer.</value>
+  </data>
+  <data name="CMN_Invalid_Access" xml:space="preserve">
+    <value>Invalid access.</value>
+  </data>
+  <data name="CMN_Invalid_Update" xml:space="preserve">
+    <value>Invalid Updation.</value>
+  </data>
+  <data name="CMN_Mandatory" xml:space="preserve">
+    <value>is mandatory.</value>
+  </data>
+  <data name="CMN_MaximumLength" xml:space="preserve">
+    <value>Maximum length is</value>
+  </data>
+  <data name="CMN_MinimumLength" xml:space="preserve">
+    <value>Minimum length is</value>
+  </data>
+  <data name="CMN_Need_Selection" xml:space="preserve">
+    <value>Need selection.</value>
+  </data>
+  <data name="CMN_NoConfigFound" xml:space="preserve">
+    <value>No Configuration found</value>
+  </data>
+  <data name="CMN_NoDetailsFound" xml:space="preserve">
+    <value>No details found.</value>
+  </data>
+  <data name="CMN_PhoneNumber" xml:space="preserve">
+    <value>PhoneNumber</value>
+  </data>
+  <data name="CMN_PleaseEnter" xml:space="preserve">
+    <value>Please enter</value>
+  </data>
+  <data name="CMN_PleaseSelect" xml:space="preserve">
+    <value>Please select</value>
+  </data>
+  <data name="CMN_PositionLevel" xml:space="preserve">
+    <value>Position Level</value>
+  </data>
+  <data name="CMN_RemoveWhiteSpace" xml:space="preserve">
+    <value>White space not allowed.</value>
+  </data>
+  <data name="CMN_Reset_Successfully" xml:space="preserve">
+    <value>Configuration reset successfully.</value>
+  </data>
+  <data name="CMN_Root" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="CMN_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CMN_Saved_Successfully" xml:space="preserve">
+    <value>Saved Successfully.</value>
+  </data>
+  <data name="CMN_Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="CMN_SpecialChar_NotAllowed" xml:space="preserve">
+    <value>Special character not allowed.</value>
+  </data>
+  <data name="CMN_Updated_Successfully" xml:space="preserve">
+    <value>Updated successfully.</value>
+  </data>
+  <data name="CMN_Valid" xml:space="preserve">
+    <value>valid</value>
+  </data>
+</root>

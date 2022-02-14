@@ -1,0 +1,211 @@
+﻿@model  SmartEdu.ViewModel.RoleTaskMappingViewModel
+@using SmartEdu.Helper
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 600px;">
+        <tr>
+            <td>
+                <div align="center">
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label(ResourceKeeper.GetResource("APP_Role"))
+                        </td>
+                        <td class="td_text">
+                                @Html.DropDownListFor(model => model.SRTM_Role_Id,(Model==null || Model.RoleList==null ?new List<SelectListItem>(){new SelectListItem()}:Model.RoleList))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @Html.ValidationMessageFor(model => model.SRTM_Role_Id)               
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td  class="gridAction">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                @ResourceKeeper.GetResource("CMN_Add")
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                 @ResourceKeeper.GetResource("CMN_Delete")
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="gridbox"  class="gridBox" style="width: 100%; overflow:auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display:none;height:320px;" align="center">
+   <table class="popup_Table">
+   <tr>
+   <td align="center" valign="middle">
+   <div class="popupBox" style="height:100%;">
+        <table cellpadding="0" cellspacing="0" border="0" class="popupBoxTable">
+        <tr>
+            <td class="popupHeader">
+                <div class="popupHead" id="popUpHeader"> @ResourceKeeper.GetResource("APP_Role_Task_Mapping")</div>
+                <div class="closeIcon" onclick="fnShowhidePopUp('none');"></div>
+            </td>
+        </tr>
+        <tr>
+            <td id="popupContent" style="height:270px;" valign="middle" align="center">
+                <div id="rtmGridbox" style="width:100%;"></div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="button" value="save" onclick="fnSave();"/>
+            </td>
+        </tr>
+   </table>
+   </div>
+   </td>
+   </tr>
+   </table>
+</div>
+<script type="text/javascript">
+    /* Method used to initialize and load grid */
+    var mygrid,rtmGrid;
+    $(function () { 
+        $("#SRTM_Role_Id").change(function(){fnLoadGrid();});
+        fnSetPageSize(); init(); initTaskGrid(); fnLoadGrid(); 
+    });
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#rtmGridbox").height(String(270)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader('@ResourceKeeper.GetResource("APP_Role"),@ResourceKeeper.GetResource("APP_Task"),,'); //set column names
+        mygrid.setInitWidths("*,*,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+    }
+    function initTaskGrid() {
+        rtmGrid = new dhtmlXGridObject('rtmGridbox');
+        rtmGrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        rtmGrid.setHeader('@ResourceKeeper.GetResource("APP_Task"),@ResourceKeeper.GetResource("APP_Url"),'); //set column names
+        rtmGrid.setInitWidths("*,*,30"); //set column width in px
+        rtmGrid.setColAlign("left,left,left"); //set column values align
+        rtmGrid.setColTypes("ro,ro,ch"); //set column types
+        rtmGrid.setColSorting("str,str,str"); //set sorting
+        rtmGrid.attachHeader("#text_filter,#text_filter,#master_checkbox");
+        rtmGrid.init(); //initialize grid
+    }
+    function fnParseGrid(obj){
+        mygrid.clearAll();
+        if(obj && obj!=null){ 
+            if(obj.RTMGridData && obj.RTMGridData!=null){ mygrid.parse(obj.RTMGridData,"json");  }
+            if(obj.TaskGridData && obj.TaskGridData!=null){ rtmGrid.clearAll(); rtmGrid.parse(obj.TaskGridData,"json");  }
+        }
+    }
+    function fnLoadGrid(){
+        var roleId=$("#SRTM_Role_Id").val();
+        $.ajax({
+            url:'@Url.Content("~/RoleTaskMapping/GetGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{"roleId" : roleId},
+            success:function(obj){ fnParseGrid(obj); },
+            error:function(a,b){}
+        });
+    }
+    /* End of initialize and load grid */
+</script>
+<script type="text/javascript">
+    /* Method used for Add,Edit and Delete */
+    function fnAdd() {
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("CMN_Add")');
+        fnShowhidePopUp("");
+    }
+    function fnSave() {
+        $.ajax({
+            url: '@Url.Content("~/RoleTaskMapping/RoleTaskMappingIUAction")',
+            type: "POST",
+            contentType: "application/Json",
+            dataType: "JSON",
+            data: JSON.stringify(fnGetViewModel()),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Status) {
+                        if (obj.data && obj.data != null) { fnParseGrid(obj.data); }
+                        if (obj.isUpdate) { fnShowhidePopUp("none"); }
+                        else { fnClearContent(); }
+                    }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnGetViewModel() {
+        var RoleTaskMappingViewModel = {};
+        RoleTaskMappingViewModel.SRTM_Role_Id = $("#SRTM_Role_Id").val();
+        RoleTaskMappingViewModel.TaskIdList = fnGetTaskIdList();
+        return RoleTaskMappingViewModel;
+    }
+    function fnGetTaskIdList() {
+        var d = [];
+        var data = rtmGrid.getCheckedRows(2);
+        if (data == null || data == "") { return d; }
+        var x = data.split(',');
+        if (!x || x == null || x.length <= 0) { return d; }
+        return x;
+    }
+    function fnDelete() {
+        var id = mygrid.getSelectedId();
+        if (!id || id == null || id == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        var roleId = $("#SRTM_Role_Id").val();
+        $.ajax({
+            url: '@Url.Content("~/RoleTaskMapping/Delete")',
+            type: "POST",
+            dataType: "Json",
+            data: { "id": id, "roleId": roleId },
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.data && obj.data != null) { fnParseGrid(obj.data); }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    /* End of Add,Edit and Delete */
+    
+</script>
+<script type="text/javascript">
+    /* Commnon Methods */
+    function fnShowhidePopUp(val) { $("#contentWrapper").css("display", val); $("#popupBox").css("display", val); }
+    function fnClearContent() { $("#SRTM_Id").val("0"); $("#SRTM_Task_Id").val("0"); }
+    /* End of Commnon Methods */
+</script>

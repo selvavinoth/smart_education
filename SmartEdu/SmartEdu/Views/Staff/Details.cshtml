@@ -1,0 +1,75 @@
+﻿@model SmartEdu.ViewModel.StaffViewModel
+@{
+    Layout = null;
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:0px;width:100%;height:100%;">
+    <div  id="tabs" style="width: 100%; height: 100%;">
+        <ul>
+            <li><a href="#StaffDetail">Staff Detail</a></li>
+            <li><a href="#StaffAurthentication">Authentication Details</a></li>
+            <li><a href="#StaffAddress">Address Details</a></li>
+        </ul>
+        <div id="StaffDetail" style="overflow:auto;">
+             @Html.Partial("_CommonUserDetails", Model.UserViewModel) 
+        </div>
+    <div id="StaffAurthentication">
+        @Html.Partial("_Authentication", Model.UserAuthentication) 
+    </div>
+    <div id="StaffAddress">
+        @Html.Partial("_Address",Model.AddressViewModel)
+    </div>
+    </div>
+    <div style="width:100%;height:100%;" align="right">
+       <input type="button" onclick="fnSaveStaff();" value="Save" style="padding-right:10px;"/>
+        <input type="button" onclick="fnCancel();" value="Cancel" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var bH = parent.ContentHeight();
+        $("#tabs").height(String(bH - 50) + "px");
+        $("#StaffDetail").height(String(bH - 170) + "px");
+        $("#StaffAurthentication").height(String(bH - 170) + "px");
+        $("#StaffAddress").height(String(bH - 170) + "px");
+        if (typeof fnSetAddressPageSize == 'function') { fnSetAddressPageSize(parent.ContentWidth() - 70, bH - 100); }
+        if (typeof fnInitAddressGrid == 'function') { fnInitAddressGrid(); }
+        $('#tabs').tabs();
+    });
+    function fnValidateStaff() {
+        var flag = true;
+        if (typeof fnValidateUser == 'function') { flag = fnValidateUser(); }
+        if (typeof fnValidateAuthentication == 'function') { flag = fnValidateAuthentication(); }
+        if (typeof fnValidateAddress == 'function') { flag = fnValidateAddress(); }
+        return flag;
+    }
+    function fnCancel() { location.href = '@Url.Content("~/Staff/Index")'; }
+    function fnSaveStaff() {
+        if (!fnValidateStaff()) { return false; }
+        var data = fnGetStaffData();
+        $.ajax({
+            url: '@Url.Content("~/Staff/StaffIUAction")',
+            type: "POST",
+            contentType: "application/json",
+            dataType: "Json",
+            data: JSON.stringify(data),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Msg && obj.Msg != null) { alert(obj.Msg); }
+                    if (obj.Status) { location.href = '@Url.Content("~/Staff/Index")'; }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+
+    function fnGetStaffData() {
+        var StaffViewModel = {};
+        if (typeof fnGetUserData == 'function') { StaffViewModel.UserViewModel = fnGetUserData(); }
+        if (typeof fnGetAuthenticationData == 'function') { StaffViewModel.UserAuthentication = fnGetAuthenticationData(); }
+        if (typeof _fnGetAddressViewModel == 'function') { StaffViewModel.AddressList = _fnGetAddressViewModel(); }
+        return StaffViewModel;
+    }
+    function fnClearStaff() { if (typeof _fnClearUserDetails == 'function') {_fnClearUserDetails(); } }
+</script>

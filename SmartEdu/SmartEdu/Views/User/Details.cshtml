@@ -1,0 +1,322 @@
+﻿@model SmartEdu.ViewModel.UsersViewModel
+@{
+    Layout = null;
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:0px;width:100%;height:100%;">
+    <div  id="tabs" style="width: 100%; height: 100%;">
+        <ul>
+            <li><a href="#UserDetail">User Detail</a></li>
+            <li><a href="#UserAurthentication">User Authentication</a></li>
+            <li><a href="#UserAddress">User Address</a></li>
+        </ul>
+        <div id="UserDetail" style="overflow:auto;">
+        @using (Html.BeginForm("UserIUAction", "User", FormMethod.Post, new { id="userForm" }))
+        {
+            @Html.ValidationSummary(true)
+            <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Title")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_Title)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("First Name")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_FirstName)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Title)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_FirstName)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Middle Name")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_MiddleName)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Last Name")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_LastName)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_MiddleName)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_LastName)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Department")
+                    </td>
+                    <td class="td_text">
+                        @Html.DropDownListFor(model => model.AU_Department, (Model.DepartmentList != null ? Model.DepartmentList : new List<SelectListItem>()))
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Gender")
+                    </td>
+                    <td class="td_text">
+                        @Html.DropDownListFor(model => model.AU_Gender, (Model.GenderList != null ? Model.GenderList : new List<SelectListItem>()))
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Department)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Gender)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("DOB")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_DOB)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("DOJ")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_DOJ)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_DOB)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_DOJ)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Anniversary Date")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_Anniversary_Date)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Activated From")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_StartDate)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Anniversary_Date)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_StartDate)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Releaving Date")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_EndDate)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Qualification")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_Qualification)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_EndDate)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Qualification)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Is FA")
+                    </td>
+                    <td class="td_text">
+                        @Html.CheckBoxFor(model => model.AU_IsFA)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Mobile No")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_MobileNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_IsFA)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_MobileNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Phone No")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_PhoneNo)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Email")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_Email_Id)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_PhoneNo)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_Email_Id)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Father/Gardian Name")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_FatherName)
+                    </td>
+                    <td class="td_label">
+                        @Html.Label("Relative PhNo")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_FatherPhoneNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_FatherName)
+                    </td>
+                    <td colspan="2">
+                        @Html.ValidationMessageFor(model => model.AU_FatherPhoneNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_label">
+                        @Html.Label("Fax")
+                    </td>
+                    <td class="td_text">
+                        @Html.TextBoxFor(model => model.AU_FaxNo)
+                    </td>
+                    <td colspan="2">
+                        @Html.HiddenFor(model => model.AU_Id)
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div id="UserAurthentication">
+        @Html.Partial("_Authentication", Model.UserAuthentication) 
+    </div>
+    <div id="UserAddress">
+        @Html.Partial("_Address",Model.AddressViewModel)
+    </div>
+    </div>
+    <div style="width:100%;height:100%;" align="right">
+       <input type="button" onclick="fnSaveUsers();" value="Save" style="padding-right:10px;"/>
+        <input type="button" onclick="fnCancel();" value="Cancel" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var bH = parent.ContentHeight();
+        $("#tabs").height(String(bH - 50) + "px");
+        $("#UserDetail").height(String(bH - 100) + "px");
+        $("#UserAurthentication").height(String(bH - 100) + "px");
+        $("#UserAddress").height(String(bH - 150) + "px");
+        if (typeof fnSetAddressPageSize == 'function') { fnSetAddressPageSize(parent.ContentWidth() - 70, bH - 100); }
+        if (typeof fnInitAddressGrid == 'function') { fnInitAddressGrid(); }
+        $('#tabs').tabs();
+    });
+    function fnValidateUser() {
+        var flag = false;
+        flag = $("#userForm").valid();
+        if(typeof fnValidateAuthentication=='function'){flag=fnValidateAuthentication();}
+        if(typeof fnValidateAddress=='function'){flag=fnValidateAddress();}
+        return flag;
+    }
+    function fnCancel() { }
+    function fnSaveUsers() {
+        if (!fnValidateUser()) {return false;}
+        $.ajax({
+            url: '@Url.Content("~/User/UserIUAction")',
+            type: "POST",
+            dataType: "Json",
+            data: JSON.stringify(fnGetUserData()),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    $(obj).each(function () { $("#AS_BatchId").append($('<option>', { value: this.Value, selected: this.Selected }).text(this.Text)); });
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnGetUserData() {
+        var UsersViewModel = {};
+        UsersViewModel.AU_Title = $("#AU_Title").val();
+        UsersViewModel.AU_FirstName = $("#AU_FirstName").val();
+        UsersViewModel.AU_MiddleName = $("#AU_MiddleName").val();
+        UsersViewModel.AU_LastName = $("#AU_LastName").val();
+        UsersViewModel.AU_Gender = $("#AU_Gender").val();
+        UsersViewModel.AU_DOB = $("#AU_DOB").val();
+        UsersViewModel.AU_DOJ = $("#AU_DOJ").val();
+        UsersViewModel.AU_Anniversary_Date = $("#AU_Anniversary_Date").val();
+        UsersViewModel.AU_StartDate = $("#AU_StartDate").val();
+        UsersViewModel.AU_EndDate = $("#AU_EndDate").val();
+        UsersViewModel.AU_Qualification = $("#AU_Qualification").val();
+        UsersViewModel.AU_Department = $("#AU_Department").val();
+        UsersViewModel.AU_IsFA = $("#AU_IsFA").attr('checked');
+        UsersViewModel.AU_FatherName = $("#AU_FatherName").val();
+        UsersViewModel.AU_Email_Id = $("#AU_Email_Id").val();
+        UsersViewModel.AU_PhoneNo = $("#AU_PhoneNo").val();
+        UsersViewModel.AU_MobileNo = $("#AU_MobileNo").val();
+        UsersViewModel.AU_FaxNo = $("#AU_FaxNo").val();
+        UsersViewModel.AU_FatherPhoneNo = $("#AU_FatherPhoneNo").val();
+        UsersViewModel.UserAuthentication = fnGetAuthenticationData();
+        UsersViewModel.AddressList = fnGetAddressViewModel();
+    }
+    function fnClear() {
+        $("#AU_Title").val("");
+        $("#AU_FirstName").val("");
+        $("#AU_MiddleName").val("");
+        $("#AU_LastName").val("");
+        $("#AU_Gender").val("");
+        $("#AU_DOB").val("");
+        $("#AU_DOJ").val("");
+        $("#AU_Anniversary_Date").val("");
+        $("#AU_StartDate").val("");
+        $("#AU_EndDate").val("");
+        $("#AU_Qualification").val("");
+        $("#AU_Department").val("");
+        $("#AU_IsFA").attr('checked',false);
+        $("#AU_FatherName").val("");
+        $("#AU_Email_Id").val("");
+        $("#AU_PhoneNo").val("");
+        $("#AU_MobileNo").val("");
+        $("#AU_FaxNo").val("");
+        $("#AU_FatherPhoneNo").val("");
+    }
+</script>

@@ -1,0 +1,298 @@
+﻿@model  SmartEdu.ViewModel.MenuViewModel
+@using SmartEdu.Helper
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 800px;">
+        <tr style="background-color: Gray;">
+            <td class="td_label" style="width: 200px;">
+                @Html.Label(ResourceKeeper.GetResource("APP_Role"))
+            </td>
+            <td class="td_text" style="width: 600px;">
+                @Html.DropDownListFor(model => model.SM_Role_Id, Model.RoleList)
+            </td>
+        </tr>
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                @ResourceKeeper.GetResource("CMN_Add")
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                @ResourceKeeper.GetResource("CMN_Edit")
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                @ResourceKeeper.GetResource("CMN_Delete")
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox">
+                    <table cellpadding="0" cellspacing="0" border="0" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">@ResourceKeeper.GetResource("APP_Menu")</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 250px;" valign="middle" align="center">
+                                @using (Html.BeginForm("MenuIUAction", "Menu", FormMethod.Post, new { id = "menuForm" }))
+                                {
+                                    @Html.ValidationSummary(true)
+
+                                    <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_MenuName"))
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.EditorFor(model => model.SM_Menu_Name)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.SM_Menu_Name)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Icon Classs")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.EditorFor(model => model.SM_Class)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.SM_Class)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_Parent"))
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.SM_Parent_Id, Model.MenuList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.SM_Parent_Id)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_TaskName"))
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.SM_Task_Id,(Model.TaskList!=null? Model.TaskList:new List<SelectListItem>(){new SelectListItem()}))
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.SM_Task_Id)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label(ResourceKeeper.GetResource("APP_IsComponent"))
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.CheckBoxFor(model => model.SM_IsComponent)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>@Html.HiddenFor(model => model.SM_Id)
+                                            </td>
+                                            <td>@Html.HiddenFor(model => model.ReleaseMemory)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    /* Method used for initialization && grid loading */
+    var mygrid;
+    $(function(){ 
+        $("#SM_Role_Id").change(function(){fnLoadGrid();fnLoadTask();});
+        fnSetPageSize();
+        init();
+    });
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader('@ResourceKeeper.GetResource("APP_MenuName"),@ResourceKeeper.GetResource("APP_TaskName"),@ResourceKeeper.GetResource("APP_Url"),@ResourceKeeper.GetResource("APP_Parent"),,,,,'); //set column names
+        mygrid.setInitWidths("*,200,200,200,0,0,0,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+    }
+    function fnSetPageSize(){ $("#gridbox").height(String(parent.ContentHeight()-150-30)+"px"); $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px"); }
+    function fnLoadGrid(){
+        if($("#SM_Role_Id").val()=="0"){return false;}
+        $.ajax({
+            url:'@Url.Content("~/Menu/GetGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{"roleId": $("#SM_Role_Id").val()},
+            success:function(obj){ if(obj && obj!=null){fnParseGrid(obj);} },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){
+        if(obj.Data && obj.Data!=null){mygrid.clearAll();mygrid.parse(obj.Data,"json");}
+        if(obj.menuList && obj.menuList!=null){
+            $("#SM_Parent_Id option").remove();
+            $("#SM_Parent_Id").append($('<option>',{ value : "0" }).text('@ResourceKeeper.GetResource("CMN_Root")'));
+            $(obj.menuList).each(function(i,selected ){$("#SM_Parent_Id").append($('<option>',{ value : this.Value }).text(this.Text));});
+        }
+    }
+    function fnLoadTask(){
+        if($("#SM_Role_Id").val()=="0"){return false;}
+        $.ajax({
+            url:'@Url.Content("~/Menu/GetTask")',
+            type:"POST",
+            dataType:"Json",
+            data:{"roleId": $("#SM_Role_Id").val()},
+            success:function(obj){ 
+                $("#SM_Task_Id option").remove();
+                $("#SM_Task_Id").append($('<option>',{ value : "0" }).text('@ResourceKeeper.GetResource("CMN_Select")'));
+                if(obj && obj!=null){
+                    if(obj.taskList && obj.taskList!=null){
+                        $(obj.taskList).each(function(i,selected ){$("#SM_Task_Id").append($('<option>',{ value : this.Value }).text(this.Text));});
+                    }}
+                
+             },
+            error:function(a,b){}
+        });
+    }
+    /* End of initialization */
+</script>
+<script type="text/javascript">
+    /* Method used for Add && Edit */
+    function fnAdd() { fnClearContent(); $("#popUpHeader").html('@ResourceKeeper.GetResource("CMN_Add")'); fnShowhidePopUp(""); }
+    function fnEdit(id, flag) {
+        if (!flag) { id = mygrid.getSelectedId(); }
+        if (id == null || id == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        fnShowhidePopUp("");
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("CMN_Edit")');
+        fnFillEditData();
+    }
+    function fnFillEditData() {
+        $("#SM_Id").val(mygrid.getSelectedRowId());
+        $("#SM_Menu_Name").val(mygrid.cells(mygrid.getSelectedRowId(), 0).getValue());
+        $("#SM_Role_Id").val(mygrid.cells(mygrid.getSelectedRowId(), 4).getValue());
+        $("#SM_Task_Id").val(mygrid.cells(mygrid.getSelectedRowId(), 5).getValue());
+        $("#SM_Parent_Id").val(mygrid.cells(mygrid.getSelectedRowId(), 6).getValue());
+        $("#SM_Class").val(mygrid.cells(mygrid.getSelectedRowId(), 7).getValue());
+        fnSetCheckBox();
+    }
+    function fnSetCheckBox() {
+        var d = mygrid.cells(mygrid.getSelectedRowId(), 8).getValue();
+        if (d == "true") { $("#SM_IsComponent").attr("checked", "checked"); }
+        else { $("#SM_IsComponent").removeAttr("checked"); }
+    }
+    function fnSave() {
+        if (!$("#menuForm").valid()) { return false; }
+        $.ajax({
+            url: '@Url.Content("~/Menu/MenuIUAction")',
+            type: "POST",
+            contentType: "application/Json",
+            dataType: "JSON",
+            data: JSON.stringify(fnGetViewModel()),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Status) {
+                        if (obj.data && obj.data != null) { mygrid.clearAll(); mygrid.parse(obj.data, "json"); }
+                        if (obj.isUpdate) { fnShowhidePopUp("none"); }
+                        else { fnClearContent(); }
+                    }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnGetViewModel() {
+        var MenuViewModel = {};
+        MenuViewModel.SM_Id = $("#SM_Id").val();
+        MenuViewModel.SM_Menu_Name = $("#SM_Menu_Name").val();
+        MenuViewModel.SM_Role_Id = $("#SM_Role_Id").val();
+        MenuViewModel.SM_Task_Id = $("#SM_Task_Id").val();
+        MenuViewModel.SM_Parent_Id = $("#SM_Parent_Id").val();
+        MenuViewModel.SM_IsComponent = $("#SM_IsComponent").val();
+        MenuViewModel.SM_Class = $("#SM_Class").val();
+        return MenuViewModel;
+    }
+    /* End of Add && Edit */
+</script>
+<script type="text/javascript">
+    /* Method used for Delete */
+    function fnDelete() {
+        var id = mygrid.getSelectedId();
+        if (id == null || id == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        $.ajax({
+            url: '@Url.Content("~/Menu/Delete")',
+            type: "POST",
+            dataType: "Json",
+            data: { "id": id, "roleId": mygrid.cells(mygrid.getSelectedRowId(), 4).getValue() },
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.data && obj.data != null) { fnParseGrid(obj.data); }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    /* End of Delete */
+    /* Common methods */
+    function fnShowhidePopUp(val) { $("#contentWrapper").css("display", val); $("#popupBox").css("display", val); }
+    function fnClearContent() { $("#SM_Id").val("0"); $("#SM_Menu_Name").val(""); $("#SM_Parent_Id").val("0"); $("#SM_Task_Id").val("0"); }
+    /* End of common methods */
+</script>

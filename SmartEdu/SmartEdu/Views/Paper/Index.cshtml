@@ -1,0 +1,258 @@
+﻿@model SmartEdu.ViewModel.PaperViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 750px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 700px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    Good</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("PaperIUAction", "Menu", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Code")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.EditorFor(model => model.AP_Code)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AP_Code)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Short Name")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.EditorFor(model => model.AP_ShortName)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AP_ShortName)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Description")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.EditorFor(model => model.AP_Description)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AP_Description)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Is Pratical")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.CheckBoxFor(model => model.AP_IsPractical)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.HiddenFor(model => model.AP_Id)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){
+        fnSetPageSize();
+        init();
+    });
+    var mygrid;
+    function fnAdd() {
+        fnClearContent();
+        $("#popUpHeader").html("Add");
+        fnShowhidePopUp("");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader("Code,Short Name,Description,IsPractical,Effective From,"); //set column names
+        mygrid.setInitWidths("100,150,*,100,100,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+        fnLoadGrid();
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){
+       $("#contentWrapper").css("display", val);
+       $("#popupBox").css("display",val);
+    }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/Paper/GetPaperGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){
+                if(obj && obj!=null){fnParseGrid(obj);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){
+        if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");}
+    }
+    function fnDelete(){
+        var id=mygrid.getSelectedId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/Paper/DeletePaper")',
+            type:"POST",
+            dataType:"Json",
+            data:{"paperId":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                    fnParseGrid(obj.GridData);
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnEdit(id,flag){
+        if(!flag){id=mygrid.getSelectedId();}
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        fnShowhidePopUp("");
+        $("#popUpHeader").html("Edit");
+        fnFillEditData();
+    }
+    function fnFillEditData(){
+        $("#AP_Id").val(mygrid.getSelectedRowId());
+        $("#AP_Code").val(mygrid.cells(mygrid.getSelectedRowId(),0).getValue());
+        $("#AP_ShortName").val(mygrid.cells(mygrid.getSelectedRowId(),1).getValue());
+        $("#AP_Description").val(mygrid.cells(mygrid.getSelectedRowId(),2).getValue());
+        $("#AP_StartDate").val(mygrid.cells(mygrid.getSelectedRowId(),4).getValue());
+        $("#AP_EndDate").val(mygrid.cells(mygrid.getSelectedRowId(),5).getValue());
+        fnSetCheckBox();
+    }
+    function fnSetCheckBox(){
+        var d=mygrid.cells(mygrid.getSelectedRowId(),3).getValue();
+        if(d=="Yes"){$("#AP_IsPractical").attr("checked",true);}
+        else{$("#AP_IsPractical").removeAttr("checked");}
+    }
+    function fnClearContent(){
+        $("#AP_Id").val("0");
+        $("#AP_Description").val("");
+        $("#AP_ShortName").val("");
+        $("#AP_Code").val("");
+        $("#AP_StartDate").val("");
+        $("#AP_EndDate").val("");
+        $("#AP_IsPractical").attr("checked",false);
+    }
+    function fnSave(){
+        $.ajax({
+            url:'@Url.Content("~/Paper/PaperIUAction")',
+            type:"POST",
+            contentType:"application/Json",
+            dataType:"JSON",
+            data:JSON.stringify(fnGetViewModel()),
+            success:function(obj){
+               if(obj && obj!=null){
+                    if(obj.Status){
+                        if(obj.GridData && obj.GridData!=null){mygrid.clearAll();mygrid.parse(obj.GridData,"json");}
+                        if(obj.isUpdate){ fnShowhidePopUp("none");}
+                        else{fnClearContent();}
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnGetViewModel(){
+        var PaperViewModel={};
+        PaperViewModel.AP_Id=$("#AP_Id").val();
+        PaperViewModel.AP_Id=$("#AP_Id").val();
+        PaperViewModel.AP_Description=$("#AP_Description").val();
+        PaperViewModel.AP_ShortName=$("#AP_ShortName").val();
+        PaperViewModel.AP_Code=$("#AP_Code").val();
+        PaperViewModel.AP_StartDate=$("#AP_StartDate").val();
+        PaperViewModel.AP_EndDate=$("#AP_EndDate").val();
+        PaperViewModel.AP_IsPractical= $("#AP_IsPractical").attr("checked");
+        return PaperViewModel;
+    }
+</script>

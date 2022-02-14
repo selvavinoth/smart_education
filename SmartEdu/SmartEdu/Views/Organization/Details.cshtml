@@ -1,0 +1,79 @@
+﻿@model SmartEdu.ViewModel.OrganizationViewModel
+@{
+    Layout = null;
+}
+@using SmartEdu.Helper
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:0px;width:100%;height:100%;">
+    <div  id="tabs" style="width: 100%; height: 100%;">
+        <ul>
+            <li><a href="#OrganizationDetail">@ViewBag.Title</a></li>
+            <li><a href="#ContactPersonDetails">@ResourceKeeper.GetResource("APP_ORG_ContactPerson_Details")</a></li>
+            <li><a href="#AurthenticationDetails">@ResourceKeeper.GetResource("APP_CMN_Authentication_Details")</a></li>
+        </ul>
+    <div id="OrganizationDetail" style="overflow:auto;">
+            @Html.Partial("_OrganizationDetails", Model) 
+    </div>
+    <div id="ContactPersonDetails" style="overflow:auto;">
+            @Html.Partial("_ContactPerson", Model.OCPViewModel) 
+    </div>
+    <div id="AurthenticationDetails">
+        @Html.Partial("_Authentication", Model.UserAuthentication) 
+    </div>
+    </div>
+    <div style="width:100%;height:100%;" align="right">
+       <input type="button" onclick="fnSaveOrganization();" value="Save" style="padding-right:10px;"/>
+        <input type="button" onclick="fnCancel();" value="Cancel" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var bH = parent.ContentHeight();
+        $("#tabs").height(String(bH - 50) + "px");
+        $("#OrganizationDetail").height(String(bH - 170) + "px");
+        $("#ContactPersonDetails").height(String(bH - 170) + "px");
+        $("#AurthenticationDetails").height(String(bH - 170) + "px");
+        $('#tabs').tabs();
+        if (typeof fnCPPageSize == 'function') { fnCPPageSize(parent.ContentWidth() - 70, bH - 100); }
+        if (typeof fnInitCPGrid == 'function') { fnInitCPGrid(); }
+    });
+    function fnValidateOrganization() {
+        var flag = true;
+        if (typeof fnValidateOrg == 'function') { flag = fnValidateOrg(); }
+        if (typeof fnValidateOrgContactPerson == 'function') { flag = fnValidateOrgContactPerson(); }
+        if (typeof fnValidateAuthentication == 'function') { flag = fnValidateAuthentication(); }
+        return flag;
+    }
+    function fnCancel() { location.href = '@Url.Content(Model.CancelUrl)'; }
+    function fnSaveOrganization() {
+        if (!fnValidateOrganization()) { return false; }
+        var data = fnGetOrganizationData();
+        $.ajax({
+            url: '@Url.Content(Model.Add_EdtitUrl)',
+            type: "POST",
+            contentType: "application/json",
+            dataType: "Json",
+            data: JSON.stringify(data),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Msg && obj.Msg != null) { alert(obj.Msg); }
+                    if (obj.Status) { location.href = '@Url.Content(Model.CancelUrl)'; }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+
+    function fnGetOrganizationData() {
+        var OrganizationViewModel = {};
+        if (typeof fnGetOrgViewModel == 'function') { OrganizationViewModel = fnGetOrgViewModel(); }
+        if (typeof _fnGetCPViewModel == 'function') { OrganizationViewModel.OrganizationContactPersonViewModel = _fnGetCPViewModel(); }
+        if (typeof fnGetAuthenticationData == 'function') { OrganizationViewModel.UserAuthentication = fnGetAuthenticationData(); }
+        return OrganizationViewModel;
+    }
+    function fnClearOrganization() {
+        if (typeof _fnClearOrganizationDetails == 'function') { _fnClearOrganizationDetails(); }
+        if (typeof _fnClearContactPersonDetails == 'function') { _fnClearContactPersonDetails(); }
+    }
+</script>

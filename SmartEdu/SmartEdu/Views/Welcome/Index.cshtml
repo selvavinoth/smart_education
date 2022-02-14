@@ -1,0 +1,129 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @Html.Partial("_Scripts")
+     <script type="text/javascript">
+         var pageHeight = $(window).height()-15;
+         var pageWidth = $(window).width();
+         var footerAction = 30;
+         var headerAction = 100;
+         var menuAction = 25;
+         var logoWidth = 100;
+         var contentHeight = 0;
+         var bodyContentHeight = 0;
+         var bodyContentWidth = 0;
+         $(function () {
+             fnGetWidth(); fnGetMenu();
+         });
+         function ContentHeight() { return bodyContentHeight; }
+         function ContentWidth() { return bodyContentWidth; }
+         function fnGetWidth() {
+             $("#masterDiv").height(String(pageHeight) + "px");
+             $("#iconDiv").height("30px");
+             $("#header").height(String(headerAction) + "px");
+             $("#menuDiv").height(String(menuAction) + "px");
+             $("#bodyDiv").height(String(pageHeight - ($("#header").height())) + "px");
+             $("#bodyDiv1").height(String(pageHeight - ($("#header").height() + 50)) + "px");
+             $("#leftBiller").height(String(pageHeight - ($("#header").height() + 100)) + "px");
+             $("#rightBiller").height(String(pageHeight - ($("#header").height() + 100)) + "px");
+             $("#bodyDiv").width(String(pageWidth - 110) + "px");
+             $("#footerDiv").height("30px");
+             $("#logoDiv").height(String($("#header").height() - 19) + "px");
+             $("#logoDiv").width(String(logoWidth) + "px");
+             $("#headerInfo").height(String($("#header").height() - 30) + "px");
+             $("#hdRemain").width(String(pageWidth - (logoWidth + 250)) + "px");
+             contentHeight = $("#bodyDiv").height();
+             bodyContentHeight = $("#bodyDiv1").height();
+             bodyContentWidth = $("#bodyDiv1").width();
+         }
+         function fnGetMenu() {
+            $.ajax({
+                url: '@Url.Content("~/Welcome/GetMenuData")',
+                type: "POST",
+                dataType: "Json",
+                data: {},
+                success: function (obj) {
+                    if (obj && obj != null) {
+                        $("#menuDiv").html(obj);
+                    }
+                },
+                error: function (a, b) { }
+            });
+         }
+         function fnLoadFrame(url) { alert(url); $("#icontent").attr("src", url); }
+    </script>
+</head>
+<body>
+    <div id="masterDiv" style="width:100%;height:100%;padding-top:0px;">
+    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+        <tr id="header" class="LayoutBackground">
+            <td colspan="2">
+                <div style="width:100%; ">
+                    <div class="headL" style="width:100%; ">
+                        <div style="width:100%; ">
+                               <div class="headR" style="width:100%;">
+                                <div class="headerTextHolder" align="center">
+                                     FRANCIS XAVIER ENGINEERING COLLEGE<br />
+                                     TIRUNELVELI
+                                </div>
+                               </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="width:55px;">
+                            <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                <tr class="letfTopCorner">
+                                    <td></td>
+                                </tr>
+                                <tr class="leftBiller" id="leftBiller">
+                                    <td></td>
+                                </tr>
+                                <tr class="letfBottomCorner">
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <div id="bodyDiv" >
+                            <div id="menuDiv" style="height:25px;" class="LayoutBackground"></div>
+                            <div id="bodyDiv1">
+                            <iframe id="icontent" src="about:blank" frameborder="0" scrolling="no" height="100%" width="100%">
+                               
+                            </iframe>
+                            </div>
+                            <div id="ff" style="height:25px;" class="LayoutBackground"></div>
+                            </div>
+                        </td>
+                        <td style="width:55px;" >
+                            <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                <tr class="rightTopCorner">
+                                    <td></td>
+                                </tr>
+                                <tr class="rightBiller" id="rightBiller">
+                                    <td></td>
+                                </tr>
+                                <tr class="rightBottomCorner">
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                
+                </table>
+                    
+            </td>
+        </tr>
+    </table>
+    </div>
+</body>
+</html>

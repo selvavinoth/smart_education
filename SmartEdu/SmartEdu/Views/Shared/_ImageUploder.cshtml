@@ -1,0 +1,64 @@
+﻿@model  SmartEdu.ViewModel.ImageUploderViewModel
+<div style="width:300px;">
+@using (Html.BeginForm("UploadImage", "Shared", FormMethod.Post, 
+	new { enctype = "multipart/form-data", id="collegeLogo", 
+		name="collegeLogo", target="UploadCollegeLogo" }))
+{
+	<input type="file" name="imageFile" />
+	<input type="button" value="Save Image" onclick='@Model.FuctionName' />
+}
+</div>
+<iframe id='@Model.TargetName' name='@Model.TargetName' onload='@Model.CallBackFunction' style="position: absolute; left: -999em; top: -999em;"></iframe>
+<div id='@Model.ImgDiv'></div>
+@Html.Raw("<script type='text/javascript'>var isFirstLoad = true;")
+@Html.Raw("function "+ Model.FuctionName+" { $(\"#"+Model.FormId+"\").submit();}")
+@Html.Raw("function " + Model.CallBackFunction + " { ")
+@Html.Raw("if (isFirstLoad == true) { isFirstLoad = false; return; }")
+@Html.Raw("document.getElementById("+Model.FormId+").reset();")
+@Html.Raw("var newImg = $.parseJSON($(\"#"+Model.TargetName+"\").contents().find(\"#jsonResult\")[0].innerHTML);")
+@Html.Raw("if (newImg.IsValid == false) { alert(newImg.Message); return; }")
+@Html.Raw("var imgDiv = document.getElementById(" + Model.ImgDiv + "); var img = new Image(); img.src = newImg.ImagePath; img.height = 100; img.width = 100;")
+@Html.Raw("$(img).hide(); imgDiv.appendChild(img);")
+@Html.Raw(" $(img).fadeIn(500, null);")
+@Html.Raw("}")
+@Html.Raw("</script>")
+@*<script type="text/javascript">
+    var isFirstLoad = true;
+    
+    function UploadImage() { $("#"+'@Model.FormId').submit();}
+
+    function UploadImage_Complete() {
+        //Check to see if this is the first load of the iFrame
+        if (isFirstLoad == true) {
+            isFirstLoad = false;
+            return;
+        }
+
+        //Reset the image form so the file won't get uploaded again
+        document.getElementById('@Model.FormId').reset();
+
+        //Grab the content of the textarea we named jsonResult .  This shold be loaded into 
+        //the hidden iFrame.
+        var newImg = $.parseJSON($('#'+'@Model.TargetName').contents().find("#jsonResult")[0].innerHTML);
+        //If there was an error, display it to the user
+        if (newImg.IsValid == false) {
+            alert(newImg.Message);
+            return;
+        }
+
+        //Create a new image and insert it into the Images div.  Just to be fancy, 
+        //we're going to use a "FadeIn" effect from jQuery
+        var imgDiv = document.getElementById('@Model.FuctionName');
+        var img = new Image();
+        img.src = newImg.ImagePath;
+        img.height = 100;
+        img.width = 100;
+
+        //Hide the image before adding to the DOM
+        $(img).hide();
+        imgDiv.appendChild(img);
+        //Now fade the image in
+        $(img).fadeIn(500, null);
+    }
+
+</script>*@

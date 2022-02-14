@@ -1,0 +1,254 @@
+﻿/* Css Used in Layout */
+.menuHolder
+{
+    background-image:url(../images/Menu.jpg);
+    height:20px;
+    background-repeat:repeat-x;
+}
+.footerHolder
+{
+    background-image:url(../images/Menu.jpg);
+    height:30px;
+    background-repeat:repeat-x;
+}
+.gridAction
+{
+    background-image:url(../images/Menu.jpg);
+    height:30px;
+    background-repeat:repeat-x;
+    border: 1px bold white;
+}
+.headerInfo
+{
+    background-image:url(../images/header.jpg);
+    height:125px;
+    width:250px;
+    background-repeat:no-repeat;
+}
+.headerRepeat
+{
+    background-color:#1684CF;
+    background-repeat:repeat-x;
+    height:100px;
+}
+.pageDimmer
+{
+    position:absolute;
+    height:100%;
+    width:100%;
+    background-color:Black;
+    z-index:100001;
+    filter: alpha(opacity=50);
+	-moz-opacity: .50;
+	opacity: .50;
+    top:0px;
+    left:0px;
+}
+.Button 
+{
+    padding:0px 2px 0px 2px;
+    width:auto;
+    text-align:center;
+    color:#ffffff;
+}
+.AddIcon label
+{
+    background-image:url(../images/add.png);
+    padding-left:26px;
+    background-repeat:no-repeat;
+    width:auto;
+    text-align:left;
+    color:#ffffff;
+    font-weight:bold;
+    height:30px;
+}
+.EditIcon label
+{
+    background-image:url(../images/edit.png);
+    padding-left:26px;
+    background-repeat:no-repeat;
+    width:auto;
+    text-align:left;
+    color:#ffffff;
+    font-weight:bold;
+    height:30px;
+}
+.DeleteIcon label
+{
+    background-image:url(../images/delete.png);
+    padding-left:26px;
+    background-repeat:no-repeat;
+    width:auto;
+    text-align:left;
+    color:#ffffff;
+    font-weight:bold;
+    height:30px;
+}
+.closeIcon
+{
+    background-image:url(../images/close.png);
+    background-repeat:no-repeat;
+    float:right;
+    width:24px;
+    height:24px;
+    border:1px solid blue;
+    border-color:Red;
+}
+.popupBox
+{
+    width:400px;
+    height:300px;
+    border:1px solid black;
+    background-color: White;
+	border: 2px solid black;
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+	overflow:auto;
+}
+.popupHeader
+{
+    background-image:url(../images/Menu.jpg);
+    background-repeat:no-repeat;
+    height:24px;
+    width:auto;
+    padding:0px !important;
+}
+.popup_Cotainer
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:100001;
+    top:0px;
+    left:0px;
+}
+.popup_Table
+{
+    width:100%;
+    height:100%;
+}
+.popupBox .popupBoxTable
+{
+     width:100%;
+    height:100%;
+}
+div.popupHead
+{
+	padding-left: 5px;
+	padding-top: 4px;
+	float: left;
+	color: White;
+}
+.footerButton
+{
+    
+}
+/* End of Layout css */
+
+
+/*new */
+
+.headL
+{
+    background-image:url(../images/leftCorner.png);
+    padding-left:0px;
+    padding-top:0px;
+    height:100px;
+    background-repeat:no-repeat;
+}
+.headR
+{
+    background-image:url(../images/rightCorner.png);
+    padding-right:0px;
+    padding-top:0px;
+    height:100px;
+    background-position:100%;
+    background-repeat:no-repeat;
+}
+.letfTopCorner
+{
+    background-image:url(../images/ltc.png);
+    padding-left:0px;
+    padding-top:0px;
+    height:50px;
+    background-repeat:no-repeat;
+}
+.letfBottomCorner
+{
+    background-image:url(../images/lbc.png);
+    padding-left:0px;
+    padding-top:0px;
+    height:55px;
+    background-repeat:no-repeat;
+}
+.rightTopCorner
+{
+    background-image:url(../images/rtc.png);
+    padding-left:0px;
+    padding-top:0px;
+    background-position:100% right;
+    height:50px;
+}
+.rightBottomCorner
+{
+    background-image:url(../images/rbc.png);
+    padding-left:0px;
+    padding-top:0px;
+    background-position:100% right;
+    height:55px;
+}
+.rightBiller
+{
+    background-image:url(../images/rb.png);
+    padding-left:0px;
+    padding-top:0px;
+    background-position:100% right;
+    height:auto;
+    background-repeat:repeat-y;
+}
+.leftBiller
+{
+    background-image:url(../images/lb.png);
+    padding-left:0px;
+    padding-top:0px;
+    height:auto;
+    background-repeat:repeat-y;
+}
+.LayoutBackground
+{
+    background-color:#005AAF;
+}
+.gridBox
+{
+    border : 1px groove #005AAF;
+}
+.td_label
+{
+    width:auto;
+    text-align:right;
+    font-weight:bold;
+}
+.td_text
+{
+    width:auto;
+    height:30px;
+    padding:2px 0px 2px 2px;
+}
+ .heighlitter
+{
+    text-decoration : blink;
+    color :Yellow;
+    font-weight:bold;
+}
+.headerTextHolder
+{
+    font-style:italic;
+    color:white;
+    width:100%;
+    font-variant:small-caps;
+    padding-top:30px;
+    font-size:20px;
+    font-weight:bold;
+}
+

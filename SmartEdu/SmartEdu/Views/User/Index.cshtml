@@ -1,0 +1,57 @@
+﻿@model SmartEdu.ViewModel.UsersViewModel
+@{
+    Layout = null;
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 1000px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var userGrid;
+    $(function () {
+
+    });
+    function fnInitUserGrid() { 
+        userGrid = new dhtmlXGridObject('gridbox');
+        userGrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        userGrid.setHeader(",Address Type,Address1,Address2,Street,City,State,Country,Pincode,"); //set column names
+        userGrid.setInitWidths("0,*,*,*,*,ss100,10,100,100,30"); //set column width in px
+        userGrid.setColAlign("left,left,left,left,left,left,left,left,left,left,center"); //set column values align
+        userGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ch"); //set column types
+        userGrid.setColSorting("str,str,str,str,str,str,str,str,str,str"); //set sorting
+        userGrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#master_checkBox");
+        userGrid.init(); //initialize grid
+        userGrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEditAddress();});
+    }
+</script>

@@ -1,0 +1,270 @@
+﻿@model SmartEdu.ViewModel.SemesterPaperMappingViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 800px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 600px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    Good</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("SemesterPaperMappingIUAction", "SemesterPaperMapping", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                                      <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Batch")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.ASPM_Batch, (Model.BatchList != null ? Model.BatchList : new List<SelectListItem>() { }), "- Select -")
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Graduation")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.ASPM_Graduation, (Model.GraduationList != null ? Model.GraduationList : new List<SelectListItem>() { }), "- Select -")
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Semester")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.ASPM_AS_Id, (Model.SemesterList != null ? Model.SemesterList : new List<SelectListItem>() { }), "- Select -")
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.ASPM_AS_Id)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Paper")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.ASPM_AP_Id, (Model.PaperList!=null?Model.PaperList:new List<SelectListItem>(){}),"- Select -")
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.ASPM_AP_Id)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.HiddenFor(model => model.ASPM_Id)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){
+        fnSetPageSize();
+        init();
+        $("#ASPM_Batch").change(function(){ 
+            $("#ASPM_AS_Id option").remove();
+            $("#ASPM_AS_Id").append($('<option>',{ value : ""}).text("- Select -"));
+            $("#ASPM_Graduation").val("");
+            $("#ASPM_AP_Id").val("");
+        });
+        $("#ASPM_Graduation").change(function(){ 
+            $("#ASPM_AS_Id option").remove();
+            if($("#ASPM_Graduation").val()==""){ $("#ASPM_AS_Id").append($('<option>',{ value : ""}).text("- Select -"));return false;}
+            else{fnLoadSemesterList(false);}
+        });
+    });
+    var mygrid;
+    function fnAdd() {
+        fnClearContent();
+        $("#popUpHeader").html("Add");
+        fnShowhidePopUp("");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader(",,Batch,Semester,Paper,IsTheory,Stream,Effective From,,"); //set column names
+        mygrid.setInitWidths("0,0,100,150,*,100,100,125,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+        fnLoadGrid();
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){
+       $("#contentWrapper").css("display", val);
+       $("#popupBox").css("display",val);
+    }
+    function fnLoadSemesterList(flag){
+        $.ajax({
+            url:'@Url.Content("~/SemesterPaperMapping/GetSemesterData")',
+            type:"POST",
+            dataType:"Json",
+            data:{"batchString":$("#ASPM_Batch").val(),"graduation":$("#ASPM_Graduation").val()},
+            success:function(obj){
+                if(obj && obj!=null){
+                    $(obj).each(function(){ $("#ASPM_AS_Id").append($('<option>',{ value : this.Value , selected : this.Selected}).text(this.Text));});
+                    if(flag){ $("#ASPM_AS_Id").val(mygrid.cells(mygrid.getSelectedRowId(),0).getValue());}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/SemesterPaperMapping/GetGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){
+                if(obj && obj!=null){fnParseGrid(obj);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){
+        if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");}
+    }
+    function fnDelete(){
+        var id=mygrid.getSelectedId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/SemesterPaperMapping/Delete")',
+            type:"POST",
+            dataType:"Json",
+            data:{"mappingId":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                    fnParseGrid(obj.GridData);
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnEdit(id,flag){
+        if(!flag){id=mygrid.getSelectedId();}
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        fnShowhidePopUp("");
+        $("#popUpHeader").html("Edit");
+        fnFillEditData();
+    }
+    function fnFillEditData(){
+        $("#ASPM_Id").val(mygrid.getSelectedRowId());
+        $("#ASPM_AP_Id").val(mygrid.cells(mygrid.getSelectedRowId(),1).getValue());
+        $("#ASPM_Graduation").val(mygrid.cells(mygrid.getSelectedRowId(),9).getValue());
+        $("#ASPM_Batch").val(mygrid.cells(mygrid.getSelectedRowId(),2).getValue());
+        $("#AB_StartDate").val(mygrid.cells(mygrid.getSelectedRowId(),7).getValue());
+        $("#AB_EndDate").val(mygrid.cells(mygrid.getSelectedRowId(),8).getValue());      
+        fnLoadSemesterList(true);
+    }
+    function fnClearContent(){
+        $("#ASPM_Id").val("0");
+        $("#ASPM_AS_Id").val("");
+        $("#ASPM_AP_Id").val("");
+        $("#ASPM_Batch").val("");
+        $("#AB_StartDate").val("");
+        $("#AB_EndDate").val("");
+        $("#ASPM_Graduation").val("");
+    }
+    function fnSave(){
+        $.ajax({
+            url:'@Url.Content("~/SemesterPaperMapping/SemseterPaperMappingIUAction")',
+            type:"POST",
+            contentType:"application/Json",
+            dataType:"JSON",
+            data:JSON.stringify(fnGetViewModel()),
+            success:function(obj){
+               if(obj && obj!=null){
+                    if(obj.Status){
+                        if(obj.GridData && obj.GridData!=null){mygrid.clearAll();mygrid.parse(obj.GridData,"json");}
+                        if(obj.isUpdate){ fnShowhidePopUp("none");}
+                        else{fnClearContent();}
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnGetViewModel(){
+        var SemesterPaperMappingViewModel={};
+        SemesterPaperMappingViewModel.ASPM_Id=$("#ASPM_Id").val();
+        SemesterPaperMappingViewModel.ASPM_AS_Id=$("#ASPM_AS_Id").val();
+        SemesterPaperMappingViewModel.ASPM_AP_Id=$("#ASPM_AP_Id").val();
+        return SemesterPaperMappingViewModel;
+    }
+</script>

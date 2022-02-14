@@ -1,0 +1,114 @@
+﻿<script src='@Url.Content("~//Content/BootStrap/js/jquery.js")' type="text/javascript"></script>
+<link href= '@Url.Content("~/Content/BootStrap/css/bootstrap.min.css")' rel="stylesheet" type="text/css" />
+<link href='@Url.Content("~/Content/BootStrap/css/bootstrap-reset.css")' rel="stylesheet" type="text/css" />
+<link href='@Url.Content("~/Content/BootStrap/assets/font-awesome/css/font-awesome.css")' rel="stylesheet" type="text/css" />
+<link href='@Url.Content("~/Content/BootStrap/css/mystyle.css")' rel="stylesheet" type="text/css" />
+<link href='@Url.Content("~/Content/BootStrap/css/mystyle-responsive.css")' rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+//    var bghList;
+//    function BootStrapGrid(id) { return $("#" + id); }
+//    function SetBGHeader(header) {
+//        if (header == null || header == "") { bghList = null; return fasle; }
+//        bghList = header.split(",").toList();
+//    }
+//    function Init() {
+//        if (bghList = null) { alert("Invalid Header.");return false; }
+//    }
+    function ParseGrid(gObj, DataObj) {
+        var bGObj = {};
+        bGObj.Target = "id";
+        bGObj.Header = "S.No,Name,Department";
+        bGObj.Footer = "";
+        bGObj.ColumnId = "sNo,Name,DepName";
+        bGObj.ColumnAlign = "center,center,center";
+        bGObj.NeedAction = true;
+        bGObj.ActionType = "Edit,Delete,View";
+        bGObj.ActionClass = "icon-edit-sign,icon-trash,icon-user";
+    }
+
+
+
+    var BootStrapGrid = function (id, needAction, isResponsive) { this.Target = id; this.NeedAction = needAction; this.IsResponsive = isResponsive; };
+    BootStrapGrid.prototype = {
+        Target: "",
+        Header: "Header",
+        ColumnId: "",
+        ColumnWidth: "",
+        ColumnAlign: "",
+        ColumnType: "",
+        ColumnSorting: "",
+        Footer: "",
+        HeaderAttachment: [],
+        FooterAttachment: [],
+        ActionClass: "",
+        IsResponsive: false,
+        NeedAction: false,
+        DataObj: false,
+        TblObj: false,
+        init: function () {
+            var obj = $("#" + this.Target);
+            if (!obj || obj == null) { return alert("container not found."); }
+            $(obj).append(this.CreateTableObj()).attr("z-index", "100000000");
+            if (this.IsResponsive) { obj.addClass("table-responsive"); }
+            this.DataObj = obj;
+        },
+        setHeader: function (header) { this.Header = header; },
+        setColumnId: function (columnIds) { this.ColumnId = columnIds; },
+        setInitWidths: function (colWidth) { this.ColumnWidth = colWidth; },
+        setColAlign: function (colAlign) { this.ColumnAlign = colAlign; },
+        setColTypes: function (colType) { this.ColumnType = colType; },
+        setColSorting: function (colSorting) { this.ColumnSorting = colSorting; },
+        attachFooter: function (footer) { this.Footer = footer; },
+        setActionClass: function (actionClass) { this.ActionClass; },
+        CreateTableObj: function () {
+            var tbObj = $("<table/>").addClass("table table-striped table-bordered");
+            this.TblObj=$(tbObj).append(this.CreateHeaderObj(this.Header));
+            return this.TblObj;
+        },
+        CreateHeaderObj: function (header) {
+            var thObj = $("<tr/>").addClass("bsgHeader");
+            var d = header.split(',');
+            if (d.length != 0) {
+                for (var i = 0; i < d.length; i++) {
+                    var tdObj = $("<th/>");
+                    $(tdObj).append(d[i]);
+                    $(thObj).append(tdObj);
+                }
+            }
+            return thObj;
+        },
+        CreateTblRow: function (tobj, dataObj) {
+            var tCount = dataObj.total_Count;
+            alert(tCount);
+            $(dataObj.rows).each(function () {
+                var $tr = $("<tr/>");
+                var $td = $("<td/>");
+              //  $tr.append($("<td/>").append(this.id));
+                $(this.data).each(function () { $tr.append($("<td/>").append(this)); });
+                $(tobj).append($tr);
+            });
+        },
+        parse: function (obj) {
+            if (!obj || obj == null) { return; }
+            var dObj = this.DataObj;
+            var tObj = this.TblObj;
+            $(dObj).html("");
+            this.CreateTblRow(tObj, obj);
+            $(dObj).append(tObj);
+        }
+    };
+</script>
+<style type="text/css">
+.bsgHeader
+{
+  background-color:#003D50;
+  color: Red;
+  font-weight: bold;
+  border: 0px solid black;
+  font-size: 12px;
+}
+</style>
+
+
+

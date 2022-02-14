@@ -1,0 +1,301 @@
+﻿@model SmartEdu.ViewModel.OrganizationContactPersonViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@using SmartEdu.Helper
+@Html.Partial("_Scripts")
+<div id="addressDiv">
+    <div id="pageAddressDiv" align="center" style="width: 100%;">
+        <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+            <tr>
+                <td colspan="2">
+                    <div class="gridAction" style="width: 100%;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td class="AddIcon">
+                                <label onclick="fnAddCP();">
+                                    @ResourceKeeper.GetResource("CMN_Add")
+                                </label>
+                            </td>
+                            <td class="EditIcon">
+                                <label onclick="fnEditCP();">
+                                     @ResourceKeeper.GetResource("CMN_Edit")
+                                </label>
+                            </td>
+                            <td class="DeleteIcon">
+                                <label onclick="fnDeleteCP();">
+                                    @ResourceKeeper.GetResource("CMN_Delete")
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="cpGridBox" class="gridBox">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="contactPersonContentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="contactPersonPopup" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 700px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    @ResourceKeeper.GetResource("APP_ORG_ContactPerson")</div>
+                                <div class="closeIcon" onclick="fnShowHideCP('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("OrganizationContactPersonIUAction", "Organization", FormMethod.Post, new { id = "orgContactPersonForm" }))
+                {
+                    @Html.ValidationSummary(true)
+                    <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_ContactPerson"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORGCP_ContactPerson)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_PhoneNo"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORGCP_PhoneNumber)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_ContactPerson)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_PhoneNumber)
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_ProfileImage"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORGCP_ProfileImage, new { type = "file" })
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_Qualification"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORGCP_Qualification)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_ProfileImage)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_Qualification)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_EmailID"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORGCP_EmailId)
+                            </td>
+                             <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_FaxNo"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORGCP_FaxNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_EmailId)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_FaxNo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_City"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORGCP_City)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_State"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORGCP_State)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_City)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_State)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_Country"))
+                            </td>
+                            <td class="td_text">
+                                    @Html.TextBoxFor(model => model.ORGCP_Country)
+                            </td>
+                            <td class="td_label">
+                                @Html.Label(ResourceKeeper.GetResource("APP_ORG_PinCode"))
+                            </td>
+                            <td class="td_text">
+                                @Html.TextBoxFor(model => model.ORGCP_Pincode)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_Country)
+                            </td>
+                            <td colspan="2">
+                                @Html.ValidationMessageFor(model => model.ORGCP_Pincode)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.HiddenFor(model => model.ORGCP_Id)
+                            </td>
+                        </tr>
+                    </table>
+                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" onclick="fnSaveCP();" value="Save" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+  //  function fnValidateOrgContactPerson() { return $("#orgContactPersonForm").valid(); }
+</script>
+
+<script type="text/javascript">
+    var cpGrid;
+    function fnInitCPGrid() { 
+        cpGrid = new dhtmlXGridObject('cpGridBox');
+        cpGrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        cpGrid.setHeader(',@ResourceKeeper.GetResource("APP_ORG_ContactPerson"),@ResourceKeeper.GetResource("APP_ORG_Qualification"),@ResourceKeeper.GetResource("APP_ORG_PhoneNo"),@ResourceKeeper.GetResource("APP_ORG_EmailID"),@ResourceKeeper.GetResource("APP_ORG_FaxNo"),@ResourceKeeper.GetResource("APP_ORG_City"),@ResourceKeeper.GetResource("APP_ORG_State"),@ResourceKeeper.GetResource("APP_ORG_Country"),@ResourceKeeper.GetResource("APP_ORG_Pincode"),,,'); //set column names
+        cpGrid.setInitWidths("0,*,*,*,*,100,100,100,100,100,0,0,0"); //set column width in px
+        cpGrid.setColAlign("left,left,left,left,left,left,left,left,left,left,left,left,left"); //set column values align
+        cpGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        cpGrid.setColSorting("str,str,str,str,str,str,str,str,str,str,str,str,str"); //set sorting
+        cpGrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        cpGrid.init(); //initialize grid
+        cpGrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEditCP();});
+        fnLoadCPGrid();
+    }
+    function fnLoadCPGrid(){
+        $.ajax({
+            url:'@Url.Content(Model.CPGridLoadUrl)',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){ if(obj && obj!=null){if(obj.GridData && obj.GridData!=null){cpGrid.clearAll();cpGrid.parse(obj.GridData,"json");}} },
+            error:function(a,b){}
+        });
+    }
+    function fnAddCP(){ fnClearCP(); fnShowHideCP(""); }
+    function fnShowHideCP(value){ $("#contactPersonContentWrapper").css("display",value); $("#contactPersonPopup").css("display",value); }
+    function fnClearCP(){
+        $("#ORGCP_Id").val("0");
+        $("#ORGCP_ContactPerson").val("");
+        $("#ORGCP_Qualification").val("");
+        $("#ORGCP_PhoneNumber").val("");
+        $("#ORGCP_EmailId").val("");
+        $("#ORGCP_FaxNo").val("");
+        $("#ORGCP_City").val("");
+        $("#ORGCP_State").val("");
+        $("#ORGCP_Country").val("");
+        $("#ORGCP_Pincode").attr("");
+        $("#ORGCP_StartDate").attr("");
+        $("#ORGCP_EndDate").attr("");
+        $("#CPBinaryCode").attr("");
+    }
+    function fnCPPageSize(w,h){ $("#addressDiv").width(String(w)+"px"); $("addressDiv").height(String(h)+"px"); $("#cpGridBox").width(String(w)+"px"); $("#cpGridBox").height(String(h-120)+"px"); }
+</script>
+<script type="text/javascript">
+    function fnSaveCP() {
+        var rows = cpGrid.getAllRowIds();
+        var rows_list = {};
+        if ($('#orgContactPersonForm').valid()) {
+            if ($("#ORGCP_Id").val() != "0") {
+                cpGrid.cells(rowId, 0).setValue($("#ORGCP_Id").val());
+                cpGrid.cells(rowId, 1).setValue($("#ORGCP_ContactPerson").val());
+                cpGrid.cells(rowId, 2).setValue($("#ORGCP_Qualification").val());
+                cpGrid.cells(rowId, 3).setValue($("#ORGCP_PhoneNumber").val());
+                cpGrid.cells(rowId, 4).setValue($("#ORGCP_EmailId").val());
+                cpGrid.cells(rowId, 5).setValue($("#ORGCP_FaxNo").val());
+                cpGrid.cells(rowId, 6).setValue($("#ORGCP_City").val());
+                cpGrid.cells(rowId, 7).setValue($("#ORGCP_State").val());
+                cpGrid.cells(rowId, 8).setValue($("#ORGCP_Country").val());
+                cpGrid.cells(rowId, 9).setValue($("#ORGCP_Pincode").val());
+                cpGrid.cells(rowId, 10).setValue($("#ORGCP_StartDate").val());
+                cpGrid.cells(rowId, 11).setValue($("#ORGCP_EndDate").val());
+                cpGrid.cells(rowId, 12).setValue($("#CPBinaryCode").val());
+            } else {
+                var row_Id = 1;
+                if (rows) {
+                    rows_list = rows.split(",");
+                    row_Id = Math.abs(rows_list[rows_list.length - 1]) + 1;
+                }
+                cpGrid.addRow(row_Id, ["0", $('#ORGCP_ContactPerson').val(), $('#ORGCP_Qualification').val(), $('#ORGCP_PhoneNumber').val(), $('#ORGCP_EmailId').val(), $("#ORGCP_FaxNo").val(), $('#ORGCP_City').val(), $('#ORGCP_State').val(), $('#ORGCP_Country').val(), $('#ORGCP_Pincode').val(), $('#ORGCP_StartDate').val(), $('#ORGCP_EndDate').val(), $('#CPBinaryCode').val()]);
+            }
+            fnShowHideAddress("none");
+        }
+    }
+
+    function _fnGetCPViewModel() {
+        var AddressData = [];
+        var d = String(cpGrid.getAllRowIds()).split(',');
+        if (d == null || d == "" || d.length == 0) { return AddressData; }
+        for (var i = 0; i < d.length; i++) {
+            var OrganizationContactPersonViewModel = {};
+            OrganizationContactPersonViewModel.ORGCP_Id = cpGrid.cells(d[i], 0).getValue();
+            OrganizationContactPersonViewModel.ORGCP_ContactPerson = cpGrid.cells(d[i], 1).getValue();
+            OrganizationContactPersonViewModel.ORGCP_Qualification = cpGrid.cells(d[i], 2).getValue();
+            OrganizationContactPersonViewModel.ORGCP_PhoneNumber = cpGrid.cells(d[i], 3).getValue();
+            OrganizationContactPersonViewModel.ORGCP_EmailId = cpGrid.cells(d[i], 4).getValue();
+            OrganizationContactPersonViewModel.ORGCP_FaxNo = cpGrid.cells(d[i], 5).getValue();
+            OrganizationContactPersonViewModel.ORGCP_City = cpGrid.cells(d[i], 6).getValue();
+            OrganizationContactPersonViewModel.ORGCP_State = cpGrid.cells(d[i], 7).getValue();
+            OrganizationContactPersonViewModel.ORGCP_Country = cpGrid.cells(d[i], 8).getValue();
+            OrganizationContactPersonViewModel.ORGCP_Pincode = cpGrid.cells(d[i], 9).getValue();
+            OrganizationContactPersonViewModel.ORGCP_StartDate = cpGrid.cells(d[i], 10).getValue();
+            OrganizationContactPersonViewModel.ORGCP_EndDate = cpGrid.cells(d[i], 11).getValue();
+            OrganizationContactPersonViewModel.CPBinaryCode = cpGrid.cells(d[i], 12).getValue();
+            AddressData.push(OrganizationContactPersonViewModel);
+        }
+        return AddressData;
+    }
+</script>

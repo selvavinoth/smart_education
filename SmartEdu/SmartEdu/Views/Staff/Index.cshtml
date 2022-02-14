@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 1000px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit();">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDeleteStaff();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 1000px; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){ fnSetPageSize(); init(); });
+    var mygrid;
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader("Staff Name,Department,Qualification,Phone No,EmailId,Father Name,Effective From,Effective To"); //set column names
+        mygrid.setInitWidths("100,100,100,100,100,*,100,100"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit();});
+        fnLoadGrid();
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){ $("#contentWrapper").css("display", val); $("#popupBox").css("display",val); }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/Staff/GetStaffData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){ if(obj && obj!=null){fnParseGrid(obj.GridData);} },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){ if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");} }
+    function fnDelete(){
+        var id=mygrid.getSelectedId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/Staff/DeleteStaff")',
+            type:"POST",
+            dataType:"Json",
+            data:{"staffId":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                    fnParseGrid(obj.GridData);
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnAdd(){location.href='@Url.Content("~/Staff/Details")';}
+    function fnEdit(){
+        var rowId=mygrid.getSelectedRowId();
+        if(!rowId){alert("Need Selection.");return false;}
+        location.href='@Url.Content("~/Staff/Details?id=")'+""+rowId;
+    }
+     function fnDeleteStaff() {
+        var rowId=mygrid.getSelectedRowId();
+        if(!rowId){alert("Need Selection.");return false;}
+        if(!confirm("Are you sure?Do you want to continue?")){return false;}
+        $.ajax({
+            url: '@Url.Content("~/Staff/DeleteStaff")',
+            type: "POST",
+            dataType: "Json",
+            data: {"staffId":rowId},
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Msg && obj.Msg != null) { alert(obj.Msg); }
+                    fnParseGrid(obj.GridData);
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    </script>

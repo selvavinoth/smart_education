@@ -1,0 +1,258 @@
+﻿@model SmartEdu.ViewModel.BatchViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 800px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 600px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    Good</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("BatchIUAction", "Batch", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Graduation")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.AB_Graduate,Model.GraduationList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AB_Graduate)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Degree")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.AB_Degree, Model.DegreeList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AB_Degree)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Department")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.AB_Department, Model.DepartmentList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AB_Department)
+                                            </td>
+                                        </tr>
+                                      <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Year")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.AB_Year,Model.YearList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AB_Year)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.HiddenFor(model => model.AB_Id)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){
+        fnSetPageSize();
+        init();
+    });
+    var mygrid;
+    function fnAdd() {
+        fnClearContent();
+        $("#popUpHeader").html("Add");
+        fnShowhidePopUp("");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader(",,,Graduate,Degree,Department,Batch,Effective From,,"); //set column names
+        mygrid.setInitWidths("0,0,0,150,150,*,150,100,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+        fnLoadGrid();
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){
+       $("#contentWrapper").css("display", val);
+       $("#popupBox").css("display",val);
+    }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/Batch/GetBatchGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){
+                if(obj && obj!=null){fnParseGrid(obj);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){
+        if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");}
+    }
+    function fnDelete(){
+        var id=mygrid.getSelectedId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/Batch/DeleteBatch")',
+            type:"POST",
+            dataType:"Json",
+            data:{"BatchId":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                    fnParseGrid(obj.GridData);
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnEdit(id,flag){
+        if(!flag){id=mygrid.getSelectedId();}
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        fnShowhidePopUp("");
+        $("#popUpHeader").html("Edit");
+        fnFillEditData();
+    }
+    function fnFillEditData(){
+        $("#AB_Id").val(mygrid.getSelectedRowId());
+        $("#AB_Graduate").val(mygrid.cells(mygrid.getSelectedRowId(),0).getValue());
+        $("#AB_Degree").val(mygrid.cells(mygrid.getSelectedRowId(),1).getValue());
+        $("#AB_Department").val(mygrid.cells(mygrid.getSelectedRowId(),2).getValue());
+        $("#AB_Year").val(mygrid.cells(mygrid.getSelectedRowId(),9).getValue());
+        $("#AB_StartDate").val(mygrid.cells(mygrid.getSelectedRowId(),7).getValue());
+        $("#AB_EndDate").val(mygrid.cells(mygrid.getSelectedRowId(),8).getValue());
+    }
+    function fnClearContent(){
+        $("#AB_Id").val("0");
+        $("#AB_Graduate").val("0");
+        $("#AB_Degree").val("0");
+        $("#AB_Department").val("0");
+        $("#AB_Year").val("");
+        $("#AB_StartDate").val("");
+        $("#AB_EndDate").val("");
+    }
+    function fnSave(){
+        $.ajax({
+            url:'@Url.Content("~/Batch/BatchIUAction")',
+            type:"POST",
+            contentType:"application/Json",
+            dataType:"JSON",
+            data:JSON.stringify(fnGetViewModel()),
+            success:function(obj){
+               if(obj && obj!=null){
+                    if(obj.Status){
+                        if(obj.GridData && obj.GridData!=null){mygrid.clearAll();mygrid.parse(obj.GridData,"json");}
+                        if(obj.isUpdate){ fnShowhidePopUp("none");}
+                        else{fnClearContent();}
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnGetViewModel(){
+        var BatchViewModel={};
+        BatchViewModel.AB_Id=$("#AB_Id").val();
+        BatchViewModel.AB_Graduate=$("#AB_Graduate").val();
+        BatchViewModel.AB_Description=$("#AB_Description").val();
+        BatchViewModel.AB_Degree=$("#AB_Degree").val();
+        BatchViewModel.AB_Department=$("#AB_Department").val();
+        BatchViewModel.AB_Year=$("#AB_Year").val();
+        BatchViewModel.AB_StartDate=$("#AB_StartDate").val();
+        BatchViewModel.AB_EndDate=$("#AB_EndDate").val();
+        return BatchViewModel;
+    }
+</script>

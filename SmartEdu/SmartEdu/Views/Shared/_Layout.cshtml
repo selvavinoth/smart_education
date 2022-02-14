@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @Html.Partial("_Scripts")
+     <script type="text/javascript">
+         var pageHeight = $(window).height() - 10;
+         var pageWidth = $(window).width();
+         var footerAction=30;
+         var headerAction=100;
+         var menuAction = 20;
+         var logoWidth = 100;
+         var contentHeight = 0;
+         var bodyContentHeight = 0;
+         $(function () {
+             fnGetWidth();
+         });
+         function fnGetWidth() {
+             $("#masterDiv").height(String(pageHeight) + "px");
+             $("#iconDiv").height("30px");
+             $("#header").height(String(headerAction) + "px");
+             $("#menuDiv").height(String(menuAction) + "px");
+             $("#bodyDiv").height(String(pageHeight - ($("#header").height() + $("#menuDiv").height() + footerAction)) + "px");
+             $("#footerDiv").height("30px");
+             $("#logoDiv").height(String($("#header").height()-19) + "px");
+             $("#logoDiv").width(String(logoWidth) + "px");
+             $("#headerInfo").height(String($("#header").height() - 30) + "px");
+             $("#hdRemain").width(String(pageWidth - (logoWidth + 250)) + "px");
+             contentHeight = $("#bodyDiv").height();
+            
+          }
+    </script>
+</head>
+<body>
+    <div id="masterDiv" style="width:100%;height:100%;">
+    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+        <tr id="header">
+            <td>
+                <div id="logoDiv" class="logo">Logo</div>
+            </td>
+            <td valign="top">
+                <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+                    <tr>
+                        <td class="headerInfo">
+                        </td>
+                        <td id="hdRemain" class="headerRepeat">
+                            <div style="width:100%;">
+                                <h1>T.D.T.A.Abishekanathar.Hr.Sec.School</h1>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="menuHolder">
+            <td id="menuDiv" colspan="2" style="height:20px;">
+                Menu
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="bodyDiv" style="overflow:auto;">
+                    @RenderBody()
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="footerHolder">
+                <div id="footerDiv">
+                    This is Footer Area.....
+                </div>
+            </td>
+        </tr>
+    </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+﻿@model  SmartEdu.ViewModel.PositionsViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 600px;">
+        <tr>
+            <td class="gridAction" >
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit();">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="parentHolder"  class="gridAction" style="width: 100%;float:left;">
+                    <span onclick="fnLoadGridByParent(this)" parentId="0" class="heighlitter"> Root </span>
+                </div>
+                <div id="gridbox"  class="gridBox" style="width: 100%; overflow:auto;">
+                </div>
+                <div id="PostitonLevel"  class="gridAction" style="width:100%; float:left;" >
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display:none;" align="center">
+   <table class="popup_Table">
+   <tr>
+   <td align="center" valign="middle">
+   <div class="popupBox">
+        <table cellpadding="0" cellspacing="0" border="0" class="popupBoxTable">
+        <tr>
+            <td class="popupHeader">
+                <div class="popupHead">Good</div>
+                <div class="closeIcon" onclick="fnShowhidePopUp('none');"></div>
+            </td>
+        </tr>
+        <tr>
+            <td id="popupContent" style="height:220px;" valign="middle" align="center">
+                @using (Html.BeginForm("PositionLevelIUAction", "PositionLevel", FormMethod.Post))
+                {
+                    @Html.ValidationSummary(true)
+                   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                     <tr>
+                        <td class="td_label">
+                            @Html.Label("Parent Position")
+                        </td>
+                        <td id="parentName" style=" color:Red; text-align:left;">
+                            Root
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label("Department")
+                        </td>
+                        <td class="td_text">
+                            @Html.DropDownListFor(model => model.AP_Department_Id,Model.DepartmentList)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label("Position Level")
+                        </td>
+                        <td class="td_text">
+                            @Html.DropDownListFor(model => model.AP_PositionLevel_Id,Model.PositionLevelList)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label("Short Name")
+                        </td>
+                        <td class="td_text">
+                             @Html.EditorFor(model => model.AP_ShortName)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @Html.ValidationMessageFor(model => model.AP_ShortName)               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label("Description")
+                        </td>
+                        <td class="td_text">
+                             @Html.EditorFor(model => model.AP_Description)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @Html.ValidationMessageFor(model => model.AP_Description)               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@Html.HiddenFor(model => model.AP_ID)</td>
+                        <td>@Html.HiddenFor(model => model.AP_Parent_Id)</td>
+                    </tr>
+                   </table>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="button" value="save" onclick="fnSave();"/>
+            </td>
+        </tr>
+   </table>
+   </div>
+   </td>
+   </tr>
+   </table>
+</div>
+<script type="text/javascript">
+    $(function(){
+        fnSetPageSize();
+         init();
+         fnInitLoadGrid(0);
+    });
+    var mygrid;
+    function fnAdd() {
+        fnClearContent();
+        fnShowhidePopUp("");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader(",Short Name,Description,Department,Position Level"); //set column names
+        mygrid.setInitWidths("0,*,*,0,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnLoadByParent(rId);});
+        $("#AP_Parent_Id").val("0");
+    }
+    function fnLoadByParent(rId){
+        fnLoadGrid(rId);
+        fnSetParentName();
+    }
+    function fnSetParentName(){
+        var rId=mygrid.getSelectedRowId();
+        $("#parentName").html(mygrid.cells(rId,2).getValue());
+        $("#AP_Parent_Id").val(rId);
+        fnAppendLevel(rId,mygrid.cells(rId,2).getValue());
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150-30-30)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){
+       $("#contentWrapper").css("display", val);
+       $("#popupBox").css("display",val);
+    }
+    function fnInitLoadGrid(parentId){
+        $.ajax({
+            url:'@Url.Content("~/Positions/GetInitGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{"parentId":parentId},
+            success:function(obj){
+                if(obj.Data && obj.Data!=null){mygrid.clearAll();mygrid.parse(obj.Data,"json");}
+                if(obj.Msg && obj.Msg!="" ){alert(obj.Msg);}
+                if(obj.PosLevlString && obj.PosLevlString!=null){
+                     if(obj.PosLevlString[0] && obj.PosLevlString[0]!=null){$("#AP_PositionLevel_Id").val(obj.PosLevlString[0]);}
+                     if(obj.PosLevlString[1] && obj.PosLevlString[1]!=null){ $("#PostitonLevel").html(obj.PosLevlString[1]);}
+                }
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnLoadGrid(parentId){
+        $.ajax({
+            url:'@Url.Content("~/Positions/GetGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{"parentId":parentId},
+            success:function(obj){
+                if(obj.Data && obj.Data!=null){mygrid.clearAll();mygrid.parse(obj.Data,"json");}
+                if(obj.Msg && obj.Msg!="" ){alert(obj.Msg);}
+                if(obj.DropDownData && obj.DropDownData!=null){fnFillDropDownList(obj.DropDownData);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnFillDropDownList(obj){
+        if(obj.DpList && obj.DpList!=null){
+            $("#AP_Department_Id option").remove();
+            $(obj.DpList).each(function(i,selected ){$("#AP_Department_Id").append($('<option>',{ value : this.Value }).text(this.Text));});
+        }
+        if(obj.PSLList && obj.PSLList!=null){
+            $("#AP_PositionLevel_Id option").remove();
+            $(obj.PSLList).each(function(i,selected ){$("#AP_PositionLevel_Id").append($('<option>',{ value : this.Value }).text(this.Text));});
+        }
+    }
+    function fnLoadGridByLevel(obj){
+        var posLevelId=$(obj).attr("levelId");
+        $.ajax({
+            url:'@Url.Content("~/Positions/GetGridDataByLevelId")',
+            type:"POST",
+            dataType:"Json",
+            data:{"posLevelId":posLevelId},
+            success:function(obj){
+                if(obj.Data && obj.Data!=null){mygrid.clearAll();mygrid.parse(obj.Data,"json");}
+                if(obj.Msg && obj.Msg!="" ){alert(obj.Msg);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnDelete(){
+        var id=mygrid.getSelectedRowId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/Positions/Delete")',
+            type:"POST",
+            dataType:"Json",
+            data:{"id":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                   if(obj.Data && obj.Data!=null){
+                        mygrid.clearAll();
+                        mygrid.parse(obj.Data,"json");
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnEdit(){
+        var id=mygrid.getSelectedRowId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        fnFillEditData(id);
+         fnShowhidePopUp("");
+    }
+    function fnFillEditData(id){
+        $("#AP_ID").val(id);
+        $("#AP_ShortName").val(mygrid.cells(id,1).getValue());
+        $("#AP_Description").val(mygrid.cells(id,2).getValue());
+        $("#AP_Department_Id").val(mygrid.cells(id,3).getValue());
+        $("#AP_PositionLevel_Id").val(mygrid.cells(id,4).getValue());
+    }
+    
+    function fnSave(){
+        $.ajax({
+            url:'@Url.Content("~/Positions/PositionIUAction")',
+            type:"POST",
+            contentType:"application/Json",
+            dataType:"JSON",
+            data:JSON.stringify(fnGetViewModel()),
+            success:function(obj){
+               if(obj && obj!=null){
+                    if(obj.Status){
+                        if(obj.Data && obj.Data!=null){mygrid.clearAll();mygrid.parse(obj.Data,"json");}
+                        if(obj.isUpdate){ fnShowhidePopUp("none");}
+                        else{fnClearContent();}
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnGetViewModel(){
+        var PositionsViewModel={};
+        PositionsViewModel.AP_ID=$("#AP_ID").val();
+        PositionsViewModel.AP_Parent_Id=$("#AP_Parent_Id").val();
+        PositionsViewModel.AP_ShortName=$("#AP_ShortName").val();
+        PositionsViewModel.AP_Description=$("#AP_Description").val();
+        PositionsViewModel.AP_Department_Id=$("#AP_Department_Id").val();
+        PositionsViewModel.AP_PositionLevel_Id=$("#AP_PositionLevel_Id").val();
+        return PositionsViewModel;
+    }
+    function fnClearContent(){
+        $("#AP_ID").val("0");
+        $("#AP_ShortName").val("");
+        $("#AP_Description").val("");
+        $("#parentName").val("");
+    }
+    function fnLoadGridByParent(obj){
+        fnClearClass();
+        $(obj).nextAll("span").remove();
+        $(obj).addClass("heighlitter");
+        fnLoadGrid($(obj).attr("parentId"));
+        $("#AP_Parent_Id").val($(obj).attr("parentId"));
+        $("#parentName").html($(obj).html());
+    }
+    function fnAppendLevel(parentId,name){
+        fnClearClass();
+        var content="<span> - </span><span class='heighlitter' onclick='fnLoadGridByParent(this);' parentId="+parentId+" >"+name+"</span>";
+        $("#parentHolder").append(content);
+    }
+    function fnClearClass(){
+        $("#parentHolder").children().removeClass("heighlitter");
+    }
+   
+</script>

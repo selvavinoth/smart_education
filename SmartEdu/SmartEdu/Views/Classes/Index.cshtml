@@ -1,0 +1,274 @@
+﻿@model SmartEdu.ViewModel.ClassesViewModel
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top: 50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 800px;">
+        <tr>
+            <td class="gridAction" colspan="2">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                Add
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                Edit
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                Delete
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="gridbox" class="gridBox" style="width: 100%; overflow: auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 600px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    Good</div>
+                                <div class="closeIcon" onclick="fnShowhidePopUp('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("ClassesIUAction", "Classes", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellspacing="2" cellpadding="2" style="width: 100%;">
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Graduation")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.AC_Graduate,Model.GraduationList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AC_Graduate)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Degree")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.DropDownListFor(model => model.AC_Degree, Model.DegreeList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AC_Degree)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Department")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.AC_Department, Model.DepartmentList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AC_Department)
+                                            </td>
+                                        </tr>
+                                      <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Year")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.AC_Year, Model.YearList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AC_Year)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Section")
+                                            </td>
+                                            <td class="td_text">
+                                                 @Html.DropDownListFor(model => model.AC_Section, Model.SectionList)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AC_Section)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.HiddenFor(model => model.AC_Id)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="save" onclick="fnSave();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function(){
+        fnSetPageSize();
+        init();
+    });
+    var mygrid;
+    function fnAdd() {
+        fnClearContent();
+        $("#popUpHeader").html("Add");
+        fnShowhidePopUp("");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader(",,,,,Graduate,Degree,Department,Year,Section,Effective From,"); //set column names
+        mygrid.setInitWidths("0,0,0,0,0,150,150,150,100,100,150,0"); //set column width in px
+        mygrid.setColAlign("left,left,left,left,left,left,left,left,left,left,left,left"); //set column values align
+        mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro"); //set column types
+        mygrid.setColSorting("str,str,str,str,str,str,str,str,str,str,str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+        fnLoadGrid();
+    }
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function fnShowhidePopUp(val){
+       $("#contentWrapper").css("display", val);
+       $("#popupBox").css("display",val);
+    }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/Classes/GetClassGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){
+                if(obj && obj!=null){fnParseGrid(obj);}
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnParseGrid(obj){
+        if(obj && obj!=null){mygrid.clearAll();mygrid.parse(obj,"json");}
+    }
+    function fnDelete(){
+        var id=mygrid.getSelectedId();
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        $.ajax({
+            url:'@Url.Content("~/Classes/DeleteClasses")',
+            type:"POST",
+            dataType:"Json",
+            data:{"ClassesId":id},
+            success:function(obj){
+                if(obj && obj!=null){
+                    fnParseGrid(obj.GridData);
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnEdit(id,flag){
+        if(!flag){id=mygrid.getSelectedId();}
+        if(id==null || id==""){ alert("Need Selection"); return false;}
+        fnShowhidePopUp("");
+        $("#popUpHeader").html("Edit");
+        fnFillEditData();
+    }
+    function fnFillEditData(){
+        $("#AC_Id").val(mygrid.getSelectedRowId());
+        $("#AC_Graduate").val(mygrid.cells(mygrid.getSelectedRowId(),0).getValue());
+        $("#AC_Degree").val(mygrid.cells(mygrid.getSelectedRowId(),1).getValue());
+        $("#AC_Department").val(mygrid.cells(mygrid.getSelectedRowId(),2).getValue());
+        $("#AC_Year").val(mygrid.cells(mygrid.getSelectedRowId(),3).getValue());
+        $("#AC_Section").val(mygrid.cells(mygrid.getSelectedRowId(),4).getValue());
+        $("#AC_StartDate").val(mygrid.cells(mygrid.getSelectedRowId(),10).getValue());
+        $("#AC_EndDate").val(mygrid.cells(mygrid.getSelectedRowId(),11).getValue());
+    }
+    function fnClearContent(){
+        $("#AC_Id").val("0");
+        $("#AC_Graduate").val("0");
+        $("#AC_Degree").val("0");
+        $("#AC_Department").val("0");
+        $("#AC_Year").val("0");
+        $("#AC_Section").val("0");
+        $("#AC_StartDate").val("");
+        $("#AC_EndDate").val("");
+    }
+    function fnSave(){
+        $.ajax({
+            url:'@Url.Content("~/Classes/ClassesIUAction")',
+            type:"POST",
+            contentType:"application/Json",
+            dataType:"JSON",
+            data:JSON.stringify(fnGetViewModel()),
+            success:function(obj){
+               if(obj && obj!=null){
+                    if(obj.Status){
+                        if(obj.GridData && obj.GridData!=null){mygrid.clearAll();mygrid.parse(obj.GridData,"json");}
+                        if(obj.isUpdate){ fnShowhidePopUp("none");}
+                        else{fnClearContent();}
+                    }
+                    if(obj.Msg && obj.Msg!=""){alert(obj.Msg);}
+                } 
+            },
+            error:function(a,b){}
+        });
+    }
+    function fnGetViewModel(){
+        var ClassesViewModel={};
+        ClassesViewModel.AC_Id=$("#AC_Id").val();
+        ClassesViewModel.AC_Graduate=$("#AC_Graduate").val();
+        ClassesViewModel.AC_Description=$("#AC_Description").val();
+        ClassesViewModel.AC_Degree=$("#AC_Degree").val();
+        ClassesViewModel.AC_Department=$("#AC_Department").val();
+        ClassesViewModel.AC_Year=$("#AC_Year").val();
+        ClassesViewModel.AC_Section=$("#AC_Section").val();
+        ClassesViewModel.AC_StartDate=$("#AC_StartDate").val();
+        ClassesViewModel.AC_EndDate=$("#AC_EndDate").val();
+        return ClassesViewModel;
+    }
+</script>

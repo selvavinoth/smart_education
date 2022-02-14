@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @Html.Partial("_Scripts")
+     <script type="text/javascript">
+         var pageHeight = $(window).height() - 10;
+         var pageWidth = $(window).width();
+         var footerAction = 30;
+         var headerAction = 100;
+         var menuAction = 20;
+         var logoWidth = 100;
+         var contentHeight = 0;
+         var bodyContentHeight = 0;
+         $(function () {
+             fnGetWidth();
+         });
+         function fnGetWidth() {
+             $("#masterDiv").height(String(pageHeight) + "px");
+             $("#iconDiv").height("30px");
+             $("#header").height(String(headerAction) + "px");
+             $("#menuDiv").height(String(menuAction) + "px");
+             $("#bodyDiv").height(String(pageHeight - ($("#header").height())) + "px");
+             $("#bodyDiv1").height(String(pageHeight - ($("#header").height() +50)) + "px");
+             $("#leftBiller").height(String(pageHeight - ($("#header").height() + 100)) + "px");
+             $("#rightBiller").height(String(pageHeight - ($("#header").height() + 100)) + "px");
+             $("#bodyDiv").width(String(pageWidth-110)+"px");
+             $("#footerDiv").height("30px");
+             $("#logoDiv").height(String($("#header").height() - 19) + "px");
+             $("#logoDiv").width(String(logoWidth) + "px");
+             $("#headerInfo").height(String($("#header").height() - 30) + "px");
+             $("#hdRemain").width(String(pageWidth - (logoWidth + 250)) + "px");
+             contentHeight = $("#bodyDiv").height();
+             bodyContentHeight = $("#bodyDiv1").height();
+         }
+    </script>
+</head>
+<body>
+    <div id="masterDiv" style="width:100%;height:100%;">
+    <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+        <tr id="header" class="LayoutBackground">
+            <td colspan="2">
+                <div style="width:100%; ">
+                    <div class="headL" style="width:100%; ">
+                        <div style="width:100%; ">
+                               <div class="headR" style="width:100%;">
+                                <div style="width:100%; font-style:italic; color:White;" align="center">
+                                     FRANCIS XAVIER ENGINEERING COLLEGE
+                                </div>
+                               </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="width:55px;">
+                            <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                <tr class="letfTopCorner">
+                                    <td></td>
+                                </tr>
+                                <tr class="leftBiller" id="leftBiller">
+                                    <td></td>
+                                </tr>
+                                <tr class="letfBottomCorner">
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <div id="bodyDiv" >
+                            <div id="mem" style="height:25px;" class="LayoutBackground"></div>
+                            <div id="bodyDiv1">
+                                @RenderBody()
+                            </div>
+                            <div id="ff" style="height:25px;" class="LayoutBackground"></div>
+                            </div>
+                        </td>
+                        <td style="width:55px;" >
+                            <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                <tr class="rightTopCorner">
+                                    <td></td>
+                                </tr>
+                                <tr class="rightBiller" id="rightBiller">
+                                    <td></td>
+                                </tr>
+                                <tr class="rightBottomCorner">
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                
+                </table>
+                    
+            </td>
+        </tr>
+    </table>
+    </div>
+</body>
+</html>

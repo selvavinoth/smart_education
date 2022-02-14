@@ -1,0 +1,135 @@
+﻿@using SmartEdu.Helper
+@using SmartEdu.SessionHolder;
+@Html.Partial("_Scripts")
+<style type="text/css">
+.bgHilighter
+{
+    border:1px solid gray; 
+    background-color : Gray; 
+}
+</style>
+<div id="OrgSelMainDiv" style="width:100%;height:100%;" class="bgHilighter">
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" valign="middle">
+                <table border="0" cellpadding="0" cellspacing="5">
+                    @if (SessionPersistor.CollegeId == 0 && ViewBag.NEED_COLLEGE_SELECTION=="TRUE")
+                    {
+                    <tr>
+                        <td class="td_label">
+                          @Html.Label(@ResourceKeeper.GetResource("CMN_College"))
+                        </td>
+                        <td class="td_select">
+                            <select id="CMN_ORG_ID"></select>
+                        </td>
+                    </tr>
+                    }
+                    @if (SessionPersistor.DPID == 0 && ViewBag.NEED_DP_SELECTION == "TRUE")
+                    {
+                    <tr>
+                        <td class="td_label">
+                          @Html.Label(@ResourceKeeper.GetResource("CMN_Department"))
+                        </td>
+                        <td class="td_select">
+                            <select id="CMN_ORG_DEP_ID"></select>
+                        </td>
+                    </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var orgSelDivHeight = 0;
+    $(function () {
+        $("#CMN_ORG_ID").change(function () {
+            if (typeof _fnClearScreen == 'function') { _fnClearScreen(); }
+            fnSetCollege();
+            if ($("#CMN_ORG_ID").val() != "0") {
+                if (typeof _fnLoadOnCollegeChange == 'function') { _fnLoadOnCollegeChange(); }
+            }
+        });
+
+    });
+    function _fnOrgSelectionHeight() {return orgSelDivHeight; }
+</script>
+
+@if (SessionPersistor.CollegeId == 0 && ViewBag.NEED_COLLEGE_SELECTION == "TRUE")
+{ 
+    <script type="text/javascript">
+        $(function () {
+            orgSelDivHeight = 35;
+            if (typeof _fnLoadCollege == 'function') { _fnLoadCollege(); }
+        });
+        function _fnLoadCollege() {
+            $("#CMN_ORG_ID option").remove();
+            $("#CMN_ORG_ID").append($('<option>', { value: "0" }).text('@ResourceKeeper.GetResource("CMN_Select")'));
+            $.ajax({
+                url: '@Url.Content("~/Shared/GetCollge")',
+                type: "POST",
+                dataType: "Json",
+                data: { },
+                success: function (obj) {
+                    if (obj && obj != null) {
+                        if (obj.collegeList && obj.collegeList != null) {
+                            $(obj.collegeList).each(function (i, selected) { $("#CMN_ORG_ID").append($('<option>', { value: this.Value }).text(this.Text)); });
+                        }
+                    }
+                },
+                error: function (a, b) { }
+            });
+        }
+        function fnSetCollege() {
+            $.ajax({
+                url: '@Url.Content("~/Shared/SetSelectedCollegeId")',
+                type: "POST",
+                dataType: "Json",
+                data: { "id": $("#CMN_ORG_ID").val() },
+                success: function (obj) { },
+                error: function (a, b) { }
+            });
+        }
+    </script>
+}
+@if (SessionPersistor.DPID == 0 && ViewBag.NEED_DP_SELECTION == "TRUE")
+{ 
+    <script type="text/javascript">
+        $(function () {
+            orgSelDivHeight = 70;
+            $("#CMN_ORG_DEP_ID").change(function () {
+                if (typeof _fnClearScreen == 'function') { _fnClearScreen(); }
+                if ($("#CMN_ORG_DEP_ID").val() != "0") { if (typeof _fnLoadOnDPChange == 'function') { _fnLoadOnDPChange(); } }
+            });
+        });
+        function _fnLoadDP() {
+            $("#CMN_ORG_DEP_ID option").remove();
+            $("#CMN_ORG_DEP_ID").append($('<option>', { value: "0" }).text('@ResourceKeeper.GetResource("CMN_Select")'));
+            if ($("#CMN_ORG_ID").val() == "0") { return false; }
+                $.ajax({
+                    url: '@Url.Content("~/Shared/GetDepartment")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { "collegeId": $("#CMN_ORG_ID").val() },
+                    success: function (obj) {
+                        if (obj && obj != null) {
+                            if (obj.dpList && obj.dpList != null) {
+                                $(obj.dpList).each(function (i, selected) { $("#CMN_ORG_DEP_ID").append($('<option>', { value: this.Value }).text(this.Text)); });
+                            } 
+                        }
+                    },
+                    error: function (a, b) { }
+                });
+            }
+            function fnSetDP() {
+                $.ajax({
+                    url: '@Url.Content("~/Shared/SetSelectedDPId")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { "id": $("#CMN_ORG_DEP_ID").val() },
+                    success: function (obj) {},
+                    error: function (a, b) { }
+                });
+            }
+    </script>
+}

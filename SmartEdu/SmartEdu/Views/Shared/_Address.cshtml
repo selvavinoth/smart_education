@@ -1,0 +1,292 @@
+﻿@model SmartEdu.ViewModel.AddressViewModel
+<script type="text/javascript">
+    var addGrid;
+    function fnInitAddressGrid() { 
+        addGrid = new dhtmlXGridObject('addressGridBox');
+        addGrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        addGrid.setHeader(",Address Type,,Address1,Address2,Street,City,State,Country,Pincode,"); //set column names
+        addGrid.setInitWidths("0,*,0,*,*,*,100,100,100,100,30"); //set column width in px
+        addGrid.setColAlign("left,leftleft,,left,left,left,left,left,left,left,left,center"); //set column values align
+        addGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ra"); //set column types
+        addGrid.setColSorting("str,str,str,str,str,str,str,str,str,str,str"); //set sorting
+        addGrid.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,");
+        addGrid.init(); //initialize grid
+        addGrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEditAddress();});
+        fnLoadAddressGrid();
+    }
+    function fnLoadAddressGrid(){
+        $.ajax({
+            url:'@Model.AD_GridLoadUrl',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){ if(obj && obj!=null){if(obj && obj!=null){addGrid.clearAll();addGrid.parse(obj,"json");}} },
+            error:function(a,b){}
+        });
+    }
+    function fnAddAddress(){ fnClearAddress(); fnShowHideAddress(""); }
+    function fnShowHideAddress(value){ $("#addressContentWrapper").css("display",value); $("#addressPopup").css("display",value); }
+    function fnClearAddress(){
+        $("#AD_Id").val("0");
+        $("#AD_AddressType").val("");
+        $("#AD_Address1").val("");
+        $("#AD_Address2").val("");
+        $("#AD_Street").val("");
+        $("#AD_City").val("");
+        $("#AD_State").val("");
+        $("#AD_Country").val("");
+        $("#AD_Pincode").val("");
+        $("#AD_IsPrimary").attr("checked",false);
+    }
+    function fnEditAddress(){
+        var rowId;
+        rowId=addGrid.getSelectedId();
+        if(rowId){
+            $("#AD_Id").val(addGrid.cells(rowId,0).getValue());
+            $("#AD_AddressType").val(addGrid.cells(rowId,2).getValue());
+            $("#AD_Address1").val(addGrid.cells(rowId,3).getValue());
+            $("#AD_Address2").val(addGrid.cells(rowId,4).getValue());
+            $("#AD_Street").val(addGrid.cells(rowId,5).getValue());
+            $("#AD_City").val(addGrid.cells(rowId,6).getValue());
+            $("#AD_State").val(addGrid.cells(rowId,7).getValue());
+            $("#AD_Country").val(addGrid.cells(rowId,8).getValue());
+            $("#AD_Pincode").val(addGrid.cells(rowId,9).getValue());
+            $("#AD_IsPrimary").attr("checked",addGrid.cells(rowId,10).getValue());
+            fnShowHideAddress("");
+        }
+        else{alert("Need Selection");}
+    }
+    function fnDeleteAddress(){
+        var rowId;
+        rowId=addGrid.getSelectedId();
+        if(rowId){addGrid.deleteRow(rowId);}
+       else{alert("Need Selection");}
+    }
+    /* Save */
+    function fnSaveAddress() {   
+        var rows = addGrid.getAllRowIds();
+        var rows_list = {};
+        var value = $("#AD_AddressType").val(); 
+        var addrType=$("option[value='" + value + "']", "#AD_AddressType").text();
+        if($('#addressForm').valid()){
+            if ($("#AD_Id").val()!="0") {
+                addGrid.cells(rowId,0).setValue($("#AD_Id").val());
+                addGrid.cells(rowId,1).setValue(value);
+                addGrid.cells(rowId,2).setValue(addrType);
+                addGrid.cells(rowId,3).setValue($("#AD_Address1").val());
+                addGrid.cells(rowId,4).setValue($("#AD_Address2").val());
+                addGrid.cells(rowId,5).setValue($("#AD_Street").val());
+                addGrid.cells(rowId,6).setValue($("#AD_City").val());
+                addGrid.cells(rowId,7).setValue($("#AD_State").val());
+                addGrid.cells(rowId,8).setValue($("#AD_Country").val());
+                addGrid.cells(rowId,9).setValue($("#AD_Pincode").val());
+                addGrid.cells(rowId,10).setValue($("#AD_IsPrimary").attr("checked"));
+            }else{
+                var row_Id=1;
+                if (rows){
+                    rows_list = rows.split(",");
+                    row_Id = Math.abs(rows_list[rows_list.length - 1]) + 1;
+                }
+                addGrid.addRow(row_Id, ["0", addrType,$('#AD_AddressType').val(), $('#AD_Address1').val(), $('#AD_Address2').val(), $('#AD_Street').val(),$("#AD_City").val(), $('#AD_State').val(), $('#AD_Country').val(),$('#AD_Pincode').val(),$('#ACA_Isprimary').attr("checked")]);
+            }
+            fnShowHideAddress("none");
+        }
+    }
+/* End of  Save */
+    function _fnGetAddressViewModel(){
+        var AddressData=[];
+        var d=String(addGrid.getAllRowIds()).split(',');
+        if(d==null || d==""|| d.length==0){ return AddressData;}
+        for(var i=0;i<d.length;i++){
+            var AddressViewModel = {};
+            AddressViewModel.AD_AddressType = addGrid.cells(d[i],2).getValue();
+            AddressViewModel.AD_Address1 = addGrid.cells(d[i],3).getValue();
+            AddressViewModel.AD_Address2 = addGrid.cells(d[i],4).getValue();
+            AddressViewModel.AD_Street = addGrid.cells(d[i],5).getValue();
+            AddressViewModel.AD_City = addGrid.cells(d[i],6).getValue();
+            AddressViewModel.AD_State = addGrid.cells(d[i],7).getValue();
+            AddressViewModel.AD_Country =addGrid.cells(d[i],8).getValue();
+            AddressViewModel.AD_Pincode =addGrid.cells(d[i],9).getValue();
+            AddressViewModel.AD_IsPrimary = addGrid.cells(d[i],10).getValue();
+            AddressData.push(AddressViewModel);
+        }
+        return AddressData;
+    }
+    function fnValidateAddress() { var d=String(addGrid.getAllRowIds()).split(','); if(d=null || d==""|| d.length==0){ return false;} return true; }
+    function fnSetAddressPageSize(w,h){ $("#addressDiv").width(String(w)+"px"); $("addressDiv").height(String(h)+"px"); $("#addressGridBox").width(String(w)+"px"); $("#addressGridBox").height(String(h-120)+"px"); }
+</script>
+<div id="addressDiv">
+    <div id="pageAddressDiv" align="center" style="width: 100%;">
+        <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+            <tr>
+                <td colspan="2">
+                    <div class="gridAction" style="width: 100%;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td class="AddIcon">
+                                <label onclick="fnAddAddress();">
+                                    Add
+                                </label>
+                            </td>
+                            <td class="EditIcon">
+                                <label onclick="fnEditAddress();">
+                                    Edit
+                                </label>
+                            </td>
+                            <td class="DeleteIcon">
+                                <label onclick="fnDeleteAddress();">
+                                    Delete
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="addressGridBox" class="gridBox">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="addressContentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="addressPopup" class="popup_Cotainer" style="display: none;" align="center">
+    <table class="popup_Table">
+        <tr>
+            <td align="center" valign="middle">
+                <div class="popupBox" style="width: 700px;">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;" class="popupBoxTable">
+                        <tr>
+                            <td class="popupHeader">
+                                <div class="popupHead" id="popUpHeader">
+                                    Good</div>
+                                <div class="closeIcon" onclick="fnShowHideAddress('none');">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="popupContent" style="height: 220px;" valign="middle" align="center">
+                                @using (Html.BeginForm("AddressIUAction", "Address", FormMethod.Post, new { id="addressForm" }))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <table border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td style="width: 250px;" class="td_label">
+                                                @Html.Label("Address Type")
+                                            </td>
+                                            <td style="width: 150px;">
+                                                @Html.DropDownListFor(exp => exp.AD_AddressType, (Model.AddressTypeList != null ? Model.AddressTypeList : new List<SelectListItem>()), "- Select -")
+                                            </td>
+                                            <td style="width: 250px;" class="td_label">
+                                                @Html.Label("Address1")
+                                            </td>
+                                            <td style="width: 150px;" class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_Address1)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_AddressType)
+                                            </td>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_Address1)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Address2")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_Address2)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label("Street")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_Street)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_Address2)
+                                            </td>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_Street)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("City")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_City)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label("State")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_State)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_City)
+                                            </td>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_State)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Country")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_Country)
+                                            </td>
+                                            <td class="td_label">
+                                                @Html.Label("Pincode")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.TextBoxFor(exp => exp.AD_Pincode)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_Country)
+                                            </td>
+                                            <td colspan="2">
+                                                @Html.ValidationMessageFor(model => model.AD_Pincode)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td_label">
+                                                @Html.Label("Is Primary")
+                                            </td>
+                                            <td class="td_text">
+                                                @Html.CheckBoxFor(exp => exp.AD_IsPrimary)
+                                            </td>
+                                            <td>
+                                                 @Html.HiddenFor(exp => exp.AD_Id)
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input type="button" onclick="fnSaveAddress();" value="Save" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

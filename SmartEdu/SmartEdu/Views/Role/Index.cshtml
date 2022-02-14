@@ -1,0 +1,219 @@
+﻿@model  SmartEdu.ViewModel.RoleViewModel
+@using SmartEdu.Helper
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    Layout = null;        
+}
+@Html.Partial("_Scripts")
+@Html.Partial("_GridScript")
+<div id="pageMainDiv" align="center" style="padding-top:50px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="width: 600px;">
+        <tr>
+            <td  class="gridAction">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="AddIcon">
+                            <label onclick="fnAdd();">
+                                @ResourceKeeper.GetResource("CMN_Add")
+                            </label>
+                        </td>
+                        <td class="EditIcon">
+                            <label onclick="fnEdit('0',false);">
+                                 @ResourceKeeper.GetResource("CMN_Edit")
+                            </label>
+                        </td>
+                        <td class="DeleteIcon">
+                            <label onclick="fnDelete();">
+                                 @ResourceKeeper.GetResource("CMN_Delete")
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="gridbox"  class="gridBox" style="width: 100%; overflow:auto;">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="contentWrapper" class="pageDimmer" style="display: none;">
+</div>
+<div id="popupBox" class="popup_Cotainer" style="display:none;" align="center">
+   <table class="popup_Table">
+   <tr>
+   <td align="center" valign="middle">
+   <div class="popupBox">
+        <table cellpadding="0" cellspacing="0" border="0" class="popupBoxTable">
+        <tr>
+            <td class="popupHeader">
+                <div class="popupHead" id="popUpHeader"> @ResourceKeeper.GetResource("APP_Role")</div>
+                <div class="closeIcon" onclick="fnShowhidePopUp('none');"></div>
+            </td>
+        </tr>
+        <tr>
+            <td id="popupContent" style="height:220px;" valign="middle" align="center">
+                @using (Html.BeginForm("RoleIUAction", "Role", FormMethod.Post, new { id = "RoleForm" }))
+        {
+    @Html.ValidationSummary(true)
+
+                   <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label(ResourceKeeper.GetResource("APP_Code"))
+                        </td>
+                        <td class="td_text">
+                             @Html.EditorFor(model => model.SR_Code)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @Html.ValidationMessageFor(model => model.SR_Code)               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_label">
+                            @Html.Label(ResourceKeeper.GetResource("APP_Description"))
+                        </td>
+                        <td class="td_text">
+                             @Html.EditorFor(model => model.SR_Description)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @Html.ValidationMessageFor(model => model.SR_Description)               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(model => model.SR_Id)
+                            @Html.HiddenFor(model => model.ReleaseMemory)
+                        </td>
+                    </tr>
+                   </table>
+}
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="button" value="save" onclick="fnSave();"/>
+            </td>
+        </tr>
+   </table>
+   </div>
+   </td>
+   </tr>
+   </table>
+</div>
+<script type="text/javascript">
+    /* Method used to initialize and load grid */
+    var mygrid;
+    $(function () { fnSetPageSize(); init(); fnLoadGrid(); });
+    function fnSetPageSize(){
+        $("#gridbox").height(String(parent.ContentHeight()-150)+"px");
+        $("#pageMainDiv").height(String(parent.ContentHeight()-50)+"px");
+    }
+    function init() {
+        mygrid = new dhtmlXGridObject('gridbox');
+        mygrid.setImagePath("@Url.Content("~/Content/GridData/imgs/")"); //path to images required by grid
+        mygrid.setHeader('@ResourceKeeper.GetResource("APP_Code"),@ResourceKeeper.GetResource("APP_Description")'); //set column names
+        mygrid.setInitWidths("*,*"); //set column width in px
+        mygrid.setColAlign("left,left"); //set column values align
+        mygrid.setColTypes("ro,ro"); //set column types
+        mygrid.setColSorting("str,str"); //set sorting
+        mygrid.attachHeader("#text_filter,#text_filter");
+        mygrid.init(); //initialize grid
+        mygrid.attachEvent("onRowDblClicked",function(rId,cInd){fnEdit(rId,true);});
+    }
+    function fnLoadGrid(){
+        $.ajax({
+            url:'@Url.Content("~/Role/GetGridData")',
+            type:"POST",
+            dataType:"Json",
+            data:{},
+            success:function(obj){
+                if(obj && obj!=null){ mygrid.clearAll(); mygrid.parse(obj,"json"); }
+            },
+            error:function(a,b){}
+        });
+    }
+    /* End of initialize and load grid */
+</script>
+<script type="text/javascript">
+    /* Method used for Add,Edit and Delete */
+    function fnAdd() {
+        fnClearContent();
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("CMN_Add")');
+        fnShowhidePopUp("");
+    }
+    function fnEdit(id, flag) {
+        if (!flag) { id = mygrid.getSelectedId(); }
+        if (!id || id == null || id == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        fnShowhidePopUp("");
+        $("#popUpHeader").html('@ResourceKeeper.GetResource("CMN_Edit")');
+        fnFillEditData();
+    }
+    function fnFillEditData() {
+        $("#SR_Id").val(mygrid.getSelectedRowId());
+        $("#SR_Code").val(mygrid.cells(mygrid.getSelectedRowId(), 0).getValue());
+        $("#SR_Description").val(mygrid.cells(mygrid.getSelectedRowId(), 1).getValue());
+    }
+    function fnSave() {
+        if (!$("#RoleForm").valid()) { return false; }
+        $.ajax({
+            url: '@Url.Content("~/Role/RoleIUAction")',
+            type: "POST",
+            contentType: "application/Json",
+            dataType: "JSON",
+            data: JSON.stringify(fnGetViewModel()),
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.Status) {
+                        if (obj.data && obj.data != null) { mygrid.clearAll(); mygrid.parse(obj.data, "json"); }
+                        if (obj.isUpdate) { fnShowhidePopUp("none"); }
+                        else { fnClearContent(); }
+                    }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    function fnGetViewModel() {
+        var RoleViewModel = {};
+        RoleViewModel.SR_Id = $("#SR_Id").val();
+        RoleViewModel.SR_Code = $("#SR_Code").val();
+        RoleViewModel.SR_Description = $("#SR_Description").val();
+        return RoleViewModel;
+    }
+    function fnDelete() {
+        var id = mygrid.getSelectedId();
+        if (!id || id == null || id == "") { alert('@ResourceKeeper.GetResource("CMN_Need_Selection")'); return false; }
+        if(!confirm('@ResourceKeeper.GetResource("CMN_Cofirm")')){return false;}
+        $.ajax({
+            url: '@Url.Content("~/Role/Delete")',
+            type: "POST",
+            dataType: "Json",
+            data: { "id": id },
+            success: function (obj) {
+                if (obj && obj != null) {
+                    if (obj.data && obj.data != null) { mygrid.clearAll(); mygrid.parse(obj.data, "json"); }
+                    if (obj.Msg && obj.Msg != "") { alert(obj.Msg); }
+                }
+            },
+            error: function (a, b) { }
+        });
+    }
+    /* End of Add,Edit and Delete */
+    
+</script>
+<script type="text/javascript">
+    /* Commnon Methods */
+    function fnShowhidePopUp(val) { $("#contentWrapper").css("display", val); $("#popupBox").css("display", val); }
+    function fnClearContent() { $("#SR_Id").val("0"); $("#SR_Code").val(""); $("#SR_Description").val(""); }
+    /* End of Commnon Methods */
+</script>
